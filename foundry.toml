@@ -1,0 +1,24 @@
+[profile.default]
+
+solc = "0.8.25"
+
+remappings = [
+  "rain.math.float/=lib/rain.interpreter/lib/rain.interpreter.interface/lib/rain.math.float/src/",
+  "rain.interpreter/=lib/rain.interpreter/src/",
+  "rain.metadata/=lib/rain.interpreter/lib/rain.metadata/src/",
+  "rain.sol.codegen/=lib/rain.interpreter/lib/rain.interpreter.interface/lib/rain.sol.codegen/src/",
+  "rain.solmem/=lib/rain.interpreter/lib/rain.interpreter.interface/lib/rain.solmem/src/",
+]
+
+fs_permissions = [
+  { access = "read-write", path = "src/generated" },
+  { access = "read-write", path = "meta" },
+]
+
+evm_version = "cancun"
+
+optimizer = true
+optimizer_runs = 1000
+
+bytecode_hash = "none"
+cbor_metadata = false
