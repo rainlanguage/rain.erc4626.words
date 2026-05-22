@@ -1,0 +1,28 @@
+name: Git is clean
+on: [push]
+jobs:
+  git-clean:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+          fetch-depth: 0
+      - uses: nixbuild/nix-quick-install-action@v30
+        with:
+          nix_conf: |
+            keep-env-derivations = true
+            keep-outputs = true
+      - name: Restore and save Nix store
+        uses: nix-community/cache-nix-action@v6
+        with:
+          primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
+          restore-prefixes-first-match: nix-${{ runner.os }}-
+          gc-max-store-size-linux: 1G
+      - run: nix develop -c erc4626-prelude
+      - run: nix develop -c forge script ./script/BuildERC4626Words.sol
+      # Format the repo after generating pointers so that the pointer files are
+      # formatted too.
+      - run: nix develop -c forge fmt
+      # Check if the repo is clean after generating pointers and formatting.
+      - run: git diff --exit-code
