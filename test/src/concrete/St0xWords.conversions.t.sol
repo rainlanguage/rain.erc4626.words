@@ -3,24 +3,23 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std/Test.sol";
-import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
+import {St0xWords} from "src/concrete/St0xWords.sol";
 import {LibOpERC4626ConvertToAssets} from "src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 import {OperandV2, StackItem} from "rain.interpreter.interface/interface/unstable/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain.math.float/lib/LibDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
 
-/// @notice Tests ERC4626Words extern dispatch directly (bypassing the parser).
-/// Verifies the full extern contract deploys and routes operations correctly.
-contract ERC4626WordsConversionsTest is Test {
+/// @notice Tests St0xWords ERC-4626 extern dispatch directly (bypassing the parser).
+contract St0xWordsConversionsTest is Test {
     MockERC20 internal asset;
     MockERC4626 internal vault;
-    ERC4626Words internal erc4626Words;
+    St0xWords internal st0xWords;
 
     function setUp() external {
         asset = new MockERC20(18);
         vault = new MockERC4626(18, address(asset), 1e18);
-        erc4626Words = new ERC4626Words();
+        st0xWords = new St0xWords();
     }
 
     function testConvertToAssetsDispatch() external view {
@@ -53,8 +52,8 @@ contract ERC4626WordsConversionsTest is Test {
         assertEq(sharesRaw, 1e18, "1 asset should be 1 share");
     }
 
-    function testERC4626WordsDeploysSuccessfully() external view {
-        assertTrue(address(erc4626Words) != address(0), "ERC4626Words should deploy");
+    function testSt0xWordsDeploysSuccessfully() external view {
+        assertTrue(address(st0xWords) != address(0), "St0xWords should deploy");
     }
 
     function testConvertToAssetsAndSharesRoundTrip() external view {

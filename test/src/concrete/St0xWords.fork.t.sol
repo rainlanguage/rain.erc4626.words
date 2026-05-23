@@ -36,7 +36,7 @@ interface IERC20Fork {
     function decimals() external view returns (uint8);
 }
 
-contract ERC4626WordsForkTest is Test {
+contract St0xWordsForkTest is Test {
     function setUp() external {
         vm.createSelectFork(FORK_RPC_URL_BASE, FORK_BLOCK_BASE);
     }

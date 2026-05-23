@@ -5,9 +5,11 @@ pragma solidity =0.8.25;
 import {ERC4626Extern, BaseRainterpreterExternNPE2} from "../abstract/ERC4626Extern.sol";
 import {ERC4626SubParser, BaseRainterpreterSubParserNPE2} from "../abstract/ERC4626SubParser.sol";
 import {IDescribedByMetaV1} from "rain.metadata/interface/IDescribedByMetaV1.sol";
-import {DESCRIBED_BY_META_HASH} from "../generated/ERC4626Words.pointers.sol";
+import {DESCRIBED_BY_META_HASH} from "../generated/St0xWords.pointers.sol";
 
-contract ERC4626Words is ERC4626Extern, ERC4626SubParser {
+/// @title St0xWords
+/// @notice Rain subparser and extern for ST0x words (ERC-4626 conversions today; more words later).
+contract St0xWords is ERC4626Extern, ERC4626SubParser {
     /// @inheritdoc IDescribedByMetaV1
     function describedByMetaV1() external pure returns (bytes32) {
         return DESCRIBED_BY_META_HASH;

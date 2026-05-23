@@ -10,10 +10,10 @@ pragma solidity ^0.8.25;
 // file needs the contract to exist so that it can be compiled.
 
 /// @dev Hash of the known bytecode.
-bytes32 constant BYTECODE_HASH = bytes32(0x0a0d3746051c358591bf1c829b627ec2495727a079b235c534d3391baa0f0f8b);
+bytes32 constant BYTECODE_HASH = bytes32(0x4bb417ddfe8d79765e6c1185425a6e7326c9b29a581530de6d1a8b39ed49f2a6);
 
 /// @dev The hash of the meta that describes the contract.
-bytes32 constant DESCRIBED_BY_META_HASH = bytes32(0x88206ff6e87d82a364a75054ac7cb9c73666c8d75859650067e7f7c6bb61b8a9);
+bytes32 constant DESCRIBED_BY_META_HASH = bytes32(0xa280319376ffd9a0f4c49c003e7a8329cbd2f8aec5c9bb8107c8d9a5914c795f);
 
 /// @dev The parse meta that is used to lookup word definitions.
 /// The structure of the parse meta is:
@@ -42,18 +42,18 @@ uint8 constant PARSE_META_BUILD_DEPTH = 1;
 /// bytecode that dials back into this contract at eval time, and mapping
 /// to things that happen entirely on the interpreter such as well known
 /// constants and references to the context grid.
-bytes constant SUB_PARSER_WORD_PARSERS = hex"070c072c";
+bytes constant SUB_PARSER_WORD_PARSERS = hex"07b807d8";
 
 /// @dev Every two bytes is a function pointer for an operand handler.
 /// These positional indexes all map to the same indexes looked up in the parse
 /// meta.
-bytes constant OPERAND_HANDLER_FUNCTION_POINTERS = hex"0ac30ac3";
+bytes constant OPERAND_HANDLER_FUNCTION_POINTERS = hex"0b8f0b8f";
 
 /// @dev The function pointers for the integrity check fns.
-bytes constant INTEGRITY_FUNCTION_POINTERS = hex"0ab70ab7";
+bytes constant INTEGRITY_FUNCTION_POINTERS = hex"0b830b83";
 
 /// @dev The function pointers known to the interpreter for dynamic dispatch.
 /// By setting these as a constant they can be inlined into the interpreter
 /// and loaded at eval time for very low gas (~100) due to the compiler
 /// optimising it to a single `codecopy` to build the in memory bytes array.
-bytes constant OPCODE_FUNCTION_POINTERS = hex"07ce0807";
+bytes constant OPCODE_FUNCTION_POINTERS = hex"087a08b3";
