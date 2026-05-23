@@ -26,7 +26,8 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
     function testRunOneToOne() external view {
         StackItem[] memory inputs = new StackItem[](2);
         // vault address encoded as Float (address as integer with exponent 0)
-        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
         // 1.0 share
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
 
@@ -40,7 +41,8 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
 
     function testRunTwoShares() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
         // 2.0 shares
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(2, 0)));
 
@@ -57,7 +59,8 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
         MockERC4626 vault2 = new MockERC4626(18, address(asset), 2e18);
 
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault2)))), 0)));
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault2)))), 0)));
         // 1.0 share
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
 
@@ -71,7 +74,8 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
 
     function testRunOutputIsNonZeroForNonZeroInput() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
 
         StackItem[] memory outputs = LibOpERC4626ConvertToAssets.run(OperandV2.wrap(0), inputs);

@@ -24,7 +24,8 @@ contract St0xWordsConversionsTest is Test {
 
     function testConvertToAssetsDispatch() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
         // 1.0 share
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
 
@@ -39,7 +40,8 @@ contract St0xWordsConversionsTest is Test {
 
     function testConvertToSharesDispatch() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
         // 1.0 asset
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
 
@@ -75,7 +77,8 @@ contract St0xWordsConversionsTest is Test {
         StackItem[] memory sharesOutputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), sharesInputs);
 
         // In a 1:1 vault, shares_out should equal shares_in (within rounding)
-        uint256 sharesOutRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(sharesOutputs[0])), 18);
+        uint256 sharesOutRaw =
+            LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(sharesOutputs[0])), 18);
         uint256 sharesInRaw = LibDecimalFloat.toFixedDecimalLossless(sharesIn, 18);
         assertEq(sharesOutRaw, sharesInRaw, "round-trip should return original share amount in 1:1 vault");
     }

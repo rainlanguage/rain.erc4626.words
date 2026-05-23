@@ -22,7 +22,9 @@ contract BuildSt0xWords is Script {
             name,
             string.concat(
                 LibCodeGen.describedByMetaHashConstantString(vm, name),
-                LibGenParseMeta.parseMetaConstantString(vm, LibERC4626SubParser.authoringMetaV2(), PARSE_META_BUILD_DEPTH),
+                LibGenParseMeta.parseMetaConstantString(
+                    vm, LibERC4626SubParser.authoringMetaV2(), PARSE_META_BUILD_DEPTH
+                ),
                 LibCodeGen.subParserWordParsersConstantString(vm, st0xWords),
                 LibCodeGen.operandHandlerFunctionPointersConstantString(vm, st0xWords),
                 LibCodeGen.integrityFunctionPointersConstantString(vm, st0xWords),
