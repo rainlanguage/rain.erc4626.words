@@ -21,8 +21,8 @@
       in
       rec {
         packages = {
-          erc4626-prelude = rainix.mkTask.${system} {
-            name = "erc4626-prelude";
+          st0x-prelude = rainix.mkTask.${system} {
+            name = "st0x-prelude";
             body = ''
               set -euxo pipefail
 
@@ -34,7 +34,7 @@
                 -t cbor \
                 -e deflate \
                 -l none \
-                -o meta/ERC4626Words.rain.meta \
+                -o meta/St0xWords.rain.meta \
                 ;
             '';
           };
@@ -43,7 +43,7 @@
 
         devShells.default = pkgs.mkShell {
           packages = [
-            packages.erc4626-prelude
+            packages.st0x-prelude
             rain.defaultPackage.${system}
           ];
 

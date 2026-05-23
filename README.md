@@ -1,7 +1,8 @@
 # st0x.words
 
-Rain subparser and extern words for
-[ERC-4626](https://eips.ethereum.org/EIPS/eip-4626) tokenised vaults.
+Rain subparser and extern (`St0xWords`) for ST0x Rain words. Today this includes
+[ERC-4626](https://eips.ethereum.org/EIPS/eip-4626) vault conversions; more
+words may be added later.
 
 ## Usage
 
@@ -9,7 +10,7 @@ Provides two words that call conversion functions on any ERC-4626 vault
 contract.
 
 ```rain
-using-words-from <ERC4626Words address>
+using-words-from <St0xWords address>
 
 assets: erc4626-convert-to-assets(vault-address shares);
 shares: erc4626-convert-to-shares(vault-address assets);
@@ -74,18 +75,18 @@ Run the prelude to produce the CBOR-encoded meta, then regenerate the pointer
 constants:
 
 ```sh
-nix run .#erc4626-prelude
-forge script script/BuildERC4626Words.sol
+nix run .#st0x-prelude
+forge script script/BuildSt0xWords.sol
 ```
 
-The generated file `src/generated/ERC4626Words.pointers.sol` must be committed.
-The `git-clean` CI job enforces this by re-running both steps and checking
+The generated file `src/generated/St0xWords.pointers.sol` must be committed. The
+`git-clean` CI job enforces this by re-running both steps and checking
 `git diff --exit-code`.
 
 ### Deploy
 
 ```sh
-DEPLOYMENT_KEY=<private-key> forge script script/DeployERC4626Words.sol \
+DEPLOYMENT_KEY=<private-key> forge script script/DeploySt0xWords.sol \
   --rpc-url <rpc-url> \
   --broadcast \
   --verify

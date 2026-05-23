@@ -17,7 +17,7 @@ import {
     OPERAND_HANDLER_FUNCTION_POINTERS as SUB_PARSER_OPERAND_HANDLERS,
     PARSE_META as SUB_PARSER_PARSE_META,
     SUB_PARSER_WORD_PARSERS
-} from "../generated/ERC4626Words.pointers.sol";
+} from "../generated/St0xWords.pointers.sol";
 
 uint8 constant PARSE_META_BUILD_DEPTH = 1;
 
