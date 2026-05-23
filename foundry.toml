@@ -8,6 +8,7 @@ remappings = [
   "rain.metadata/=lib/rain.interpreter/lib/rain.metadata/src/",
   "rain.sol.codegen/=lib/rain.interpreter/lib/rain.interpreter.interface/lib/rain.sol.codegen/src/",
   "rain.solmem/=lib/rain.interpreter/lib/rain.interpreter.interface/lib/rain.solmem/src/",
+  "test/=test/",
 ]
 
 fs_permissions = [
@@ -22,3 +23,6 @@ optimizer_runs = 1000
 
 bytecode_hash = "none"
 cbor_metadata = false
+
+[rpc_endpoints]
+base = "${FORK_RPC_URL_BASE:-https://base.gateway.tenderly.co}"
