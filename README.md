@@ -74,7 +74,7 @@ Run the prelude to produce the CBOR-encoded meta, then regenerate the pointer
 constants:
 
 ```sh
-nix run .#erc4626-prelude
+nix run .#st0x-prelude
 forge script script/BuildERC4626Words.sol
 ```
 
