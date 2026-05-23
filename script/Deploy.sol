@@ -11,7 +11,9 @@ import {LibDescribedByMeta} from "rain.metadata/lib/LibDescribedByMeta.sol";
 /// https://github.com/rainlanguage/rain.metadata
 address constant METABOARD_ADDRESS = 0xfb8437AeFBB8031064E274527C5fc08e30Ac6928;
 
-contract DeploySt0xWords is Script {
+/// @title Deploy
+/// Rainix entrypoint (`rainix-sol-artifacts` runs `script/Deploy.sol:Deploy`).
+contract Deploy is Script {
     function run() public {
         uint256 deployerPrivateKey = vm.envUint("DEPLOYMENT_KEY");
         bytes memory subParserDescribedByMeta = vm.readFileBinary("meta/St0xWords.rain.meta");
