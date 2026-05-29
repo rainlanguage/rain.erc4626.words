@@ -34,7 +34,7 @@
                 -t cbor \
                 -e deflate \
                 -l none \
-                -o meta/St0xWords.rain.meta \
+                -o meta/ERC4626Words.rain.meta \
                 ;
             '';
           };
