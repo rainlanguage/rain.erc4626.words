@@ -1,4 +1,4 @@
-# st0x.words
+# rain.erc4626.words
 
 Rain subparser and extern words for
 [ERC-4626](https://eips.ethereum.org/EIPS/eip-4626) tokenised vaults.
@@ -49,8 +49,8 @@ combination (e.g. an 18-decimal share token backed by 6-decimal USDC).
 
 ## Development
 
-Enter the nix dev shell first — it provides `forge`, `rain`, and all other
-tools:
+Enter the nix dev shell first — it provides `forge`, `rain`,
+`erc4626-words-prelude`, and all other tools:
 
 ```sh
 nix develop
@@ -74,12 +74,21 @@ Run the prelude to produce the CBOR-encoded meta, then regenerate the pointer
 constants:
 
 ```sh
+nix develop -c erc4626-words-prelude
+nix develop -c forge script script/BuildERC4626Words.sol
+nix develop -c forge fmt
+```
+
+Equivalent via flake:
+
+```sh
 nix run .#erc4626-words-prelude
 forge script script/BuildERC4626Words.sol
 ```
 
-The generated file `src/generated/ERC4626Words.pointers.sol` must be committed.
-The `git-clean` CI job enforces this by re-running both steps and checking
+The generated file `src/generated/ERC4626Words.pointers.sol` and
+`meta/ERC4626Words.rain.meta` must be committed. The **Git is clean** CI job
+re-runs the prelude, pointer build, and format, then fails on
 `git diff --exit-code`.
 
 ### Deploy
@@ -99,7 +108,7 @@ tab, selecting the target network.
 | Workflow                 | Trigger         | What it does                                                                |
 | ------------------------ | --------------- | --------------------------------------------------------------------------- |
 | **Rainix CI**            | push            | Runs `rainix-sol-test`, `rainix-sol-static`, `rainix-sol-legal` in parallel |
-| **Git is clean**         | push            | Regenerates meta + pointers + format, fails if anything changed             |
+| **Git is clean**         | push            | Runs `erc4626-words-prelude`, regenerates pointers + format, fails if dirty |
 | **Manual sol artifacts** | manual dispatch | Deploys to chosen network via `rainix-sol-artifacts`                        |
 
 Required secrets: `PRIVATE_KEY`, `PRIVATE_KEY_DEV`, `CI_DEPLOY_RPC_URL`,
