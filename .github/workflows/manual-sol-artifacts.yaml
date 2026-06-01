@@ -41,7 +41,7 @@ jobs:
       - run: nix develop -c i9r-prelude
         working-directory: ./lib/rain.interpreter
       - run: nix develop -c rainix-sol-prelude
-      - run: nix develop -c st0x-prelude
+      - run: nix develop -c erc4626-words-prelude
       - run: nix develop -c rainix-sol-artifacts
         env:
           DEPLOY_BROADCAST: '1'
