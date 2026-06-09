@@ -56,6 +56,13 @@ Enter the nix dev shell first — it provides `forge`, `rain`,
 nix develop
 ```
 
+Install Solidity dependencies (soldeer) after cloning or when `soldeer.lock`
+changes:
+
+```sh
+nix develop github:rainlanguage/rainix#sol-shell -c forge soldeer install
+```
+
 ### Build
 
 ```sh
@@ -74,21 +81,21 @@ Run the prelude to produce the CBOR-encoded meta, then regenerate the pointer
 constants:
 
 ```sh
-nix develop -c erc4626-words-prelude
-nix develop -c forge script script/BuildERC4626Words.sol
-nix develop -c forge fmt
+./script/build.sh
+nix develop github:rainlanguage/rainix#sol-shell -c forge script script/BuildPointers.sol
+nix develop github:rainlanguage/rainix#sol-shell -c forge fmt
 ```
 
-Equivalent via flake:
+Equivalent via flake prelude + pointer script:
 
 ```sh
 nix run .#erc4626-words-prelude
-forge script script/BuildERC4626Words.sol
+nix develop github:rainlanguage/rainix#sol-shell -c forge script script/BuildPointers.sol
 ```
 
 The generated file `src/generated/ERC4626Words.pointers.sol` and
 `meta/ERC4626Words.rain.meta` must be committed. The **Git is clean** CI job
-re-runs the prelude, pointer build, and format, then fails on
+runs `script/build.sh`, `script/BuildPointers.sol`, format, and fails on
 `git diff --exit-code`.
 
 ### Deploy
@@ -105,11 +112,11 @@ tab, selecting the target network.
 
 ## CI
 
-| Workflow                 | Trigger         | What it does                                                                |
-| ------------------------ | --------------- | --------------------------------------------------------------------------- |
-| **Rainix CI**            | push            | Runs `rainix-sol-test`, `rainix-sol-static`, `rainix-sol-legal` in parallel |
-| **Git is clean**         | push            | Runs `erc4626-words-prelude`, regenerates pointers + format, fails if dirty |
-| **Manual sol artifacts** | manual dispatch | Deploys to chosen network via `rainix-sol-artifacts`                        |
+| Workflow                 | Trigger         | What it does                                                             |
+| ------------------------ | --------------- | ------------------------------------------------------------------------ |
+| **rainix-sol**           | push            | Reusable Rainix workflow: test, static analysis, REUSE (`rainix-sol`)    |
+| **Git is clean**         | push            | Reusable `rainix-copy-artifacts`: meta, pointers, format, fails if dirty |
+| **Manual sol artifacts** | manual dispatch | Deploys to chosen network via `rainix-sol-artifacts`                     |
 
 Required secrets: `PRIVATE_KEY`, `PRIVATE_KEY_DEV`, `CI_DEPLOY_RPC_URL`,
 `EXPLORER_VERIFICATION_KEY`, `CI_DEPLOY_BASE_RPC_URL`,
