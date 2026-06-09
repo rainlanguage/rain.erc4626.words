@@ -3,3 +3,8 @@ cache
 node_modules
 dependencies
 .pre-commit-config.yaml
+
+# Dotenv files
+.env
+.env.local
+.env.*
