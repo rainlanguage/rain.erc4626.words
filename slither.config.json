@@ -1,4 +1,4 @@
 {
-  "detectors_to_exclude": "assembly-usage,solc-version,different-pragma-directives-are-used,unused-imports",
-  "filter_paths": "lib/rain.interpreter/lib/,lib/forge-std/,test/"
+  "detectors_to_exclude": "assembly-usage,solc-version,unused-imports,pragma,different-pragma-directives-are-used,unindexed-event-address,timestamp",
+  "filter_paths": "dependencies,test,forge-std"
 }

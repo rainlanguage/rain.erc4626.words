@@ -2,15 +2,15 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {Script} from "forge-std/Script.sol";
+import {Script} from "forge-std-1.16.1/src/Script.sol";
 import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
-import {LibFs} from "rain.sol.codegen/lib/LibFs.sol";
-import {LibCodeGen} from "rain.sol.codegen/lib/LibCodeGen.sol";
-import {LibGenParseMeta} from "rain.interpreter.interface/lib/codegen/LibGenParseMeta.sol";
+import {LibFs} from "rain-sol-codegen-0.1.0/src/lib/LibFs.sol";
+import {LibCodeGen} from "rain-sol-codegen-0.1.0/src/lib/LibCodeGen.sol";
+import {LibGenParseMeta} from "rain-interpreter-interface-0.1.0/src/lib/codegen/LibGenParseMeta.sol";
 import {LibERC4626SubParser} from "src/lib/parse/LibERC4626SubParser.sol";
 import {PARSE_META_BUILD_DEPTH} from "src/abstract/ERC4626SubParser.sol";
 
-contract BuildERC4626Words is Script {
+contract BuildPointers is Script {
     function buildERC4626WordsPointers() internal {
         ERC4626Words erc4626Words = new ERC4626Words();
 

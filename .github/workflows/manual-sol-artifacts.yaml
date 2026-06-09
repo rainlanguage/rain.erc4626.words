@@ -21,7 +21,6 @@ jobs:
           echo "verifier_url_secret_name=CI_DEPLOY_${network^^}_VERIFIER_URL" >> $GITHUB_ENV
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
           fetch-depth: 0
       - uses: nixbuild/nix-quick-install-action@v30
         with:
@@ -34,12 +33,6 @@ jobs:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
           gc-max-store-size-linux: 1G
-      - run: nix develop -c rainix-sol-prelude
-        working-directory: ./lib/rain.interpreter
-      - run: nix develop -c rainix-rs-prelude
-        working-directory: ./lib/rain.interpreter
-      - run: nix develop -c i9r-prelude
-        working-directory: ./lib/rain.interpreter
       - run: nix develop -c rainix-sol-prelude
       - run: nix develop -c erc4626-words-prelude
       - run: nix develop -c rainix-sol-artifacts

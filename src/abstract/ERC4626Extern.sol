@@ -2,14 +2,10 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity ^0.8.25;
 
-import {
-    BaseRainterpreterExternNPE2,
-    OperandV2,
-    StackItem
-} from "rain.interpreter/abstract/BaseRainterpreterExternNPE2.sol";
+import {BaseRainlangExtern, OperandV2, StackItem} from "rainlang-0.1.2/src/abstract/BaseRainlangExtern.sol";
 import {LibOpERC4626ConvertToAssets} from "../lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {LibOpERC4626ConvertToShares} from "../lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
-import {LibConvert} from "rain.lib.typecast/LibConvert.sol";
+import {LibConvert} from "rain-lib-typecast-0.1.0/src/LibConvert.sol";
 import {OPCODE_FUNCTION_POINTERS, INTEGRITY_FUNCTION_POINTERS} from "../generated/ERC4626Words.pointers.sol";
 
 uint256 constant OPCODE_ERC4626_CONVERT_TO_ASSETS = 0;
@@ -17,7 +13,7 @@ uint256 constant OPCODE_ERC4626_CONVERT_TO_SHARES = 1;
 
 uint256 constant OPCODE_FUNCTION_POINTERS_LENGTH = 2;
 
-abstract contract ERC4626Extern is BaseRainterpreterExternNPE2 {
+abstract contract ERC4626Extern is BaseRainlangExtern {
     function opcodeFunctionPointers() internal pure override returns (bytes memory) {
         return OPCODE_FUNCTION_POINTERS;
     }
