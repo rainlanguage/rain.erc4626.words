@@ -92,15 +92,13 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
 
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
         StackItem[] memory outputs = LibOpERC4626ConvertToAssets.run(OperandV2.wrap(0), inputs);
-        uint256 assetsRaw =
-            LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
         assertEq(assetsRaw, 3, "1 whole share must equal 3 raw assets");
 
         // 4 raw shares (4e-18 shares): convertToAssets(4) = 4*3/1e18 = 0 (floor). Proves round-DOWN.
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(4, -18)));
         outputs = LibOpERC4626ConvertToAssets.run(OperandV2.wrap(0), inputs);
-        uint256 assetsRaw2 =
-            LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        uint256 assetsRaw2 = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
         assertEq(assetsRaw2, 0, "fractional-share remainder must round down (favor vault), not up");
     }
 }
