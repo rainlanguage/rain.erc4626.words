@@ -12,6 +12,14 @@ contract LibERC4626Test is Test {
     MockERC20 internal asset;
     MockERC4626 internal vault;
 
+    function _callConvertToAssets(Float vaultFloat, Float sharesFloat) external view returns (Float) {
+        return LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+    }
+
+    function _callConvertToShares(Float vaultFloat, Float assetsFloat) external view returns (Float) {
+        return LibERC4626.convertToShares(vaultFloat, assetsFloat);
+    }
+
     /// @dev Set up a 1:1 vault with 18-decimal shares and 18-decimal assets.
     function setUp() external {
         asset = new MockERC20(18);
@@ -108,7 +116,7 @@ contract LibERC4626Test is Test {
         Float sharesFloat = LibDecimalFloat.packLossless(1, 0);
 
         vm.expectRevert(abi.encodeWithSelector(InvalidVaultAddress.selector, badVaultFloat));
-        LibERC4626.convertToAssets(badVaultFloat, sharesFloat);
+        this._callConvertToAssets(badVaultFloat, sharesFloat);
     }
 
     /// @notice Symmetric revert for convertToShares with an oversized vault address Float.
@@ -117,7 +125,7 @@ contract LibERC4626Test is Test {
         Float assetsFloat = LibDecimalFloat.packLossless(1, 0);
 
         vm.expectRevert(abi.encodeWithSelector(InvalidVaultAddress.selector, badVaultFloat));
-        LibERC4626.convertToShares(badVaultFloat, assetsFloat);
+        this._callConvertToShares(badVaultFloat, assetsFloat);
     }
 
     /// @notice A vault whose decimals() > MAX_DECIMALS must revert with UnsupportedDecimals.
@@ -127,7 +135,7 @@ contract LibERC4626Test is Test {
         Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(badVault)))), 0);
 
         vm.expectRevert(abi.encodeWithSelector(UnsupportedDecimals.selector, address(badVault), uint8(255)));
-        LibERC4626.convertToAssets(vaultFloat, LibDecimalFloat.packLossless(1, 0));
+        this._callConvertToAssets(vaultFloat, LibDecimalFloat.packLossless(1, 0));
     }
 
     /// @notice An asset whose decimals() > MAX_DECIMALS must revert with UnsupportedDecimals.
@@ -137,7 +145,7 @@ contract LibERC4626Test is Test {
         Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(normalVault)))), 0);
 
         vm.expectRevert(abi.encodeWithSelector(UnsupportedDecimals.selector, address(badAsset), uint8(255)));
-        LibERC4626.convertToAssets(vaultFloat, LibDecimalFloat.packLossless(1, 0));
+        this._callConvertToAssets(vaultFloat, LibDecimalFloat.packLossless(1, 0));
     }
 
     /// @notice Symmetric: share vault decimals() > MAX_DECIMALS reverts for convertToShares too.
@@ -147,6 +155,6 @@ contract LibERC4626Test is Test {
         Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(badVault)))), 0);
 
         vm.expectRevert(abi.encodeWithSelector(UnsupportedDecimals.selector, address(badVault), uint8(255)));
-        LibERC4626.convertToShares(vaultFloat, LibDecimalFloat.packLossless(1, 0));
+        this._callConvertToShares(vaultFloat, LibDecimalFloat.packLossless(1, 0));
     }
 }
