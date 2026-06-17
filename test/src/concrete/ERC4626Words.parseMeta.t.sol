@@ -27,14 +27,14 @@ contract ERC4626WordsParseMetaTest is Test {
         // Bloom filters: 32 bytes each, one per build depth
         // Items: 4 bytes each, one per word (2 words)
         uint256 expectedMinLength = 2 + 32 * uint256(PARSE_META_BUILD_DEPTH_GENERATED) + 4 * 2;
-        assertTrue(PARSE_META.length >= expectedMinLength, "PARSE_META must be at least as long as its declared structure");
+        assertTrue(
+            PARSE_META.length >= expectedMinLength, "PARSE_META must be at least as long as its declared structure"
+        );
     }
 
     function testParseMetaFirstBytMatchesBuildDepth() external pure {
         assertEq(
-            uint8(PARSE_META[0]),
-            PARSE_META_BUILD_DEPTH_GENERATED,
-            "first byte of PARSE_META must equal build depth"
+            uint8(PARSE_META[0]), PARSE_META_BUILD_DEPTH_GENERATED, "first byte of PARSE_META must equal build depth"
         );
     }
 }
