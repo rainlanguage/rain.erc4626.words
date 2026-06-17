@@ -98,4 +98,56 @@ contract LibERC4626Test is Test {
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
         assertEq(sharesRaw, 1e18, "1 USDC should be 1 share in a 1:1 USDC vault");
     }
+
+    /// @notice For any whole-number shares input and any positive exchange rate,
+    /// convertToAssets must produce the same value as the independent integer floor.
+    /// Reverts (when the Float cannot represent the result) are skipped; the
+    /// rounding assertion applies only to the non-reverting subset.
+    function testFuzzConvertToAssetsFloorRounding(uint32 sharesWhole, uint64 rate) external {
+        rate = uint64(bound(rate, 1, type(uint64).max));
+        MockERC4626 v = new MockERC4626(18, address(asset), uint256(rate));
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(v)))), 0);
+        Float sharesFloat = LibDecimalFloat.packLossless(int256(uint256(sharesWhole)), 0);
+
+        uint256 sharesRaw = uint256(sharesWhole) * 1e18;
+        // Skip inputs where the vault multiply overflows uint256.
+        bool overflow = sharesRaw != 0 && uint256(rate) > type(uint256).max / sharesRaw;
+        if (overflow) return;
+        uint256 expected = sharesRaw * uint256(rate) / 1e18;
+
+        bool success;
+        uint256 actual;
+        try LibERC4626.convertToAssets(vaultFloat, sharesFloat) returns (Float f) {
+            success = true;
+            actual = LibDecimalFloat.toFixedDecimalLossless(f, 18);
+        } catch {}
+        if (success) {
+            assertEq(actual, expected, "convertToAssets floor: must equal independent computation");
+        }
+    }
+
+    /// @notice For any whole-number assets input and any positive exchange rate,
+    /// convertToShares must produce the same value as the independent integer floor.
+    function testFuzzConvertToSharesFloorRounding(uint32 assetsWhole, uint64 rate) external {
+        rate = uint64(bound(rate, 1, type(uint64).max));
+        MockERC4626 v = new MockERC4626(18, address(asset), uint256(rate));
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(v)))), 0);
+        Float assetsFloat = LibDecimalFloat.packLossless(int256(uint256(assetsWhole)), 0);
+
+        uint256 assetsRaw = uint256(assetsWhole) * 1e18;
+        // Skip inputs where the vault multiply overflows uint256.
+        bool overflow = assetsRaw != 0 && 1e18 > type(uint256).max / assetsRaw;
+        if (overflow) return;
+        uint256 expected = assetsRaw * 1e18 / uint256(rate);
+
+        bool success;
+        uint256 actual;
+        try LibERC4626.convertToShares(vaultFloat, assetsFloat) returns (Float f) {
+            success = true;
+            actual = LibDecimalFloat.toFixedDecimalLossless(f, 18);
+        } catch {}
+        if (success) {
+            assertEq(actual, expected, "convertToShares floor: must equal independent computation");
+        }
+    }
 }
