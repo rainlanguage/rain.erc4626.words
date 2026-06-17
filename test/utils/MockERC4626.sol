@@ -2,15 +2,6 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity ^0.8.25;
 
-/// @dev Minimal mock of an ERC-20 token for use as the underlying asset in tests.
-contract MockERC20 {
-    uint8 public decimals;
-
-    constructor(uint8 decimals_) {
-        decimals = decimals_;
-    }
-}
-
 /// @dev Minimal mock ERC-4626 vault for testing.
 /// Exchange rate is expressed as assetsPerShare with assetDecimals precision,
 /// i.e. assetsPerShare = (assets for 1 whole share) * 10**assetDecimals.
