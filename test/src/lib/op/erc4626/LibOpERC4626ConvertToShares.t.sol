@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {Test} from "forge-std-1.16.1/src/Test.sol";
+import {Test, stdError} from "forge-std-1.16.1/src/Test.sol";
 import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
@@ -81,5 +81,23 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         StackItem[] memory outputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
 
         assertTrue(StackItem.unwrap(outputs[0]) != bytes32(0), "output should be non-zero for non-zero input");
+    }
+
+    function runExternal(StackItem[] memory inputs) external view returns (StackItem[] memory) {
+        return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
+    }
+
+    function testRunRevertsWithEmptyInputs() external {
+        StackItem[] memory inputs = new StackItem[](0);
+        vm.expectRevert(stdError.indexOOBError);
+        this.runExternal(inputs);
+    }
+
+    function testRunRevertsWithOneInput() external {
+        StackItem[] memory inputs = new StackItem[](1);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        vm.expectRevert(stdError.indexOOBError);
+        this.runExternal(inputs);
     }
 }

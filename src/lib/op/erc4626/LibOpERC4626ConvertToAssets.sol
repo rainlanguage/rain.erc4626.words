@@ -18,12 +18,8 @@ library LibOpERC4626ConvertToAssets {
     /// ERC-4626 convertToAssets, and pushes the resulting asset amount.
     /// @param inputs the inputs to the extern: [vault address as Float, shares as Float].
     function run(OperandV2, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
-        Float vaultFloat;
-        Float sharesFloat;
-        assembly ("memory-safe") {
-            vaultFloat := mload(add(inputs, 0x20))
-            sharesFloat := mload(add(inputs, 0x40))
-        }
+        Float vaultFloat = Float.wrap(StackItem.unwrap(inputs[0]));
+        Float sharesFloat = Float.wrap(StackItem.unwrap(inputs[1]));
 
         Float assetsFloat = LibERC4626.convertToAssets(vaultFloat, sharesFloat);
 
