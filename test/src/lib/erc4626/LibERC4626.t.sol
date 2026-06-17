@@ -98,4 +98,30 @@ contract LibERC4626Test is Test {
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
         assertEq(sharesRaw, 1e18, "1 USDC should be 1 share in a 1:1 USDC vault");
     }
+
+    function testConvertToSharesRevertsOnLossyAssetsInput() external {
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
+        // 1e-19 has more precision than 18 decimal places; toFixedDecimalLossless must revert.
+        Float assetsFloat = LibDecimalFloat.packLossless(1, -19);
+        vm.expectRevert();
+        LibERC4626.convertToShares(vaultFloat, assetsFloat);
+    }
+
+    function testConvertToAssetsRevertsOnLossySharesInput() external {
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
+        // 1e-19 has more precision than 18 decimal places; toFixedDecimalLossless must revert.
+        Float sharesFloat = LibDecimalFloat.packLossless(1, -19);
+        vm.expectRevert();
+        LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+    }
+
+    function testConvertToSharesRevertsOnLossyInputWithSixDecimalAsset() external {
+        MockERC20 usdc = new MockERC20(6);
+        MockERC4626 usdcVault = new MockERC4626(18, address(usdc), 1e6);
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(usdcVault)))), 0);
+        // 1e-7 has more precision than 6 decimal places; toFixedDecimalLossless must revert.
+        Float assetsFloat = LibDecimalFloat.packLossless(1, -7);
+        vm.expectRevert();
+        LibERC4626.convertToShares(vaultFloat, assetsFloat);
+    }
 }
