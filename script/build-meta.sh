@@ -5,4 +5,4 @@
 # script/BuildPointers.sol so that pointers are always built from fresh meta.
 # Delegates to the erc4626-words-prelude nix task (single source of truth).
 set -euo pipefail
-nix run .#erc4626-words-prelude
+nix develop -c erc4626-words-prelude

@@ -5,4 +5,4 @@
 # Delegates to the erc4626-words-prelude nix task, which is the single source
 # of truth for the meta build commands (avoids duplication with flake.nix).
 set -euo pipefail
-nix run .#erc4626-words-prelude
+nix develop -c erc4626-words-prelude
