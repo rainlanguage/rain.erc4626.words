@@ -12,6 +12,14 @@ contract LibERC4626Test is Test {
     MockERC20 internal asset;
     MockERC4626 internal vault;
 
+    function _callConvertToAssets(Float vaultFloat, Float sharesFloat) external view returns (Float) {
+        return LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+    }
+
+    function _callConvertToShares(Float vaultFloat, Float assetsFloat) external view returns (Float) {
+        return LibERC4626.convertToShares(vaultFloat, assetsFloat);
+    }
+
     /// @dev Set up a 1:1 vault with 18-decimal shares and 18-decimal assets.
     function setUp() external {
         asset = new MockERC20(18);
@@ -105,7 +113,7 @@ contract LibERC4626Test is Test {
         // 1e-19 has more precision than 18 decimal places; toFixedDecimalLossless must revert.
         Float assetsFloat = LibDecimalFloat.packLossless(1, -19);
         vm.expectRevert();
-        LibERC4626.convertToShares(vaultFloat, assetsFloat);
+        this._callConvertToShares(vaultFloat, assetsFloat);
     }
 
     function testConvertToAssetsRevertsOnLossySharesInput() external {
@@ -113,7 +121,7 @@ contract LibERC4626Test is Test {
         // 1e-19 has more precision than 18 decimal places; toFixedDecimalLossless must revert.
         Float sharesFloat = LibDecimalFloat.packLossless(1, -19);
         vm.expectRevert();
-        LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+        this._callConvertToAssets(vaultFloat, sharesFloat);
     }
 
     function testConvertToSharesRevertsOnLossyInputWithSixDecimalAsset() external {
@@ -123,6 +131,6 @@ contract LibERC4626Test is Test {
         // 1e-7 has more precision than 6 decimal places; toFixedDecimalLossless must revert.
         Float assetsFloat = LibDecimalFloat.packLossless(1, -7);
         vm.expectRevert();
-        LibERC4626.convertToShares(vaultFloat, assetsFloat);
+        this._callConvertToShares(vaultFloat, assetsFloat);
     }
 }
