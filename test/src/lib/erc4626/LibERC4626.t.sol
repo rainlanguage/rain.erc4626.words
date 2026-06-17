@@ -3,7 +3,7 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
-import {LibERC4626} from "src/lib/erc4626/LibERC4626.sol";
+import {LibERC4626, InvalidVaultAddress, UnsupportedDecimals} from "src/lib/erc4626/LibERC4626.sol";
 import {LibDecimalFloat, Float} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
 
@@ -97,5 +97,55 @@ contract LibERC4626Test is Test {
 
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
         assertEq(sharesRaw, 1e18, "1 USDC should be 1 share in a 1:1 USDC vault");
+    }
+
+    /// @notice A vaultFloat encoding a value > type(uint160).max must revert rather
+    /// than silently truncate and call a different address.
+    /// Uses Float(2, 48) = 2e48 > 2^160 (~1.46e48); the coefficient 2 fits in int64.
+    function testConvertToAssetsRevertsOnOversizedVaultAddress() external {
+        Float badVaultFloat = LibDecimalFloat.packLossless(2, 48);
+        Float sharesFloat = LibDecimalFloat.packLossless(1, 0);
+
+        vm.expectRevert(abi.encodeWithSelector(InvalidVaultAddress.selector, badVaultFloat));
+        LibERC4626.convertToAssets(badVaultFloat, sharesFloat);
+    }
+
+    /// @notice Symmetric revert for convertToShares with an oversized vault address Float.
+    function testConvertToSharesRevertsOnOversizedVaultAddress() external {
+        Float badVaultFloat = LibDecimalFloat.packLossless(2, 48);
+        Float assetsFloat = LibDecimalFloat.packLossless(1, 0);
+
+        vm.expectRevert(abi.encodeWithSelector(InvalidVaultAddress.selector, badVaultFloat));
+        LibERC4626.convertToShares(badVaultFloat, assetsFloat);
+    }
+
+    /// @notice A vault whose decimals() > MAX_DECIMALS must revert with UnsupportedDecimals.
+    function testConvertToAssetsRevertsOnOversizedShareDecimals() external {
+        MockERC20 normalAsset = new MockERC20(18);
+        MockERC4626 badVault = new MockERC4626(255, address(normalAsset), 1e18);
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(badVault)))), 0);
+
+        vm.expectRevert(abi.encodeWithSelector(UnsupportedDecimals.selector, address(badVault), uint8(255)));
+        LibERC4626.convertToAssets(vaultFloat, LibDecimalFloat.packLossless(1, 0));
+    }
+
+    /// @notice An asset whose decimals() > MAX_DECIMALS must revert with UnsupportedDecimals.
+    function testConvertToAssetsRevertsOnOversizedAssetDecimals() external {
+        MockERC20 badAsset = new MockERC20(255);
+        MockERC4626 normalVault = new MockERC4626(18, address(badAsset), 1e18);
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(normalVault)))), 0);
+
+        vm.expectRevert(abi.encodeWithSelector(UnsupportedDecimals.selector, address(badAsset), uint8(255)));
+        LibERC4626.convertToAssets(vaultFloat, LibDecimalFloat.packLossless(1, 0));
+    }
+
+    /// @notice Symmetric: share vault decimals() > MAX_DECIMALS reverts for convertToShares too.
+    function testConvertToSharesRevertsOnOversizedDecimals() external {
+        MockERC20 normalAsset = new MockERC20(18);
+        MockERC4626 badVault = new MockERC4626(255, address(normalAsset), 1e18);
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(badVault)))), 0);
+
+        vm.expectRevert(abi.encodeWithSelector(UnsupportedDecimals.selector, address(badVault), uint8(255)));
+        LibERC4626.convertToShares(vaultFloat, LibDecimalFloat.packLossless(1, 0));
     }
 }
