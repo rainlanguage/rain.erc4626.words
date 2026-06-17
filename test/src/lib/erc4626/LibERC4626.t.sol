@@ -100,6 +100,14 @@ contract LibERC4626Test is Test {
         assertEq(sharesRaw, 1e18, "1 USDC should be 1 share in a 1:1 USDC vault");
     }
 
+    function _convertToAssets(Float vaultFloat, Float sharesFloat) external view returns (Float) {
+        return LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+    }
+
+    function _convertToShares(Float vaultFloat, Float assetsFloat) external view returns (Float) {
+        return LibERC4626.convertToShares(vaultFloat, assetsFloat);
+    }
+
     /// @notice For any whole-number shares input and any positive exchange rate,
     /// convertToAssets must produce the same value as the independent integer floor.
     /// Reverts (when the Float cannot represent the result) are skipped; the
@@ -118,7 +126,7 @@ contract LibERC4626Test is Test {
 
         bool success;
         uint256 actual;
-        try LibERC4626.convertToAssets(vaultFloat, sharesFloat) returns (Float f) {
+        try this._convertToAssets(vaultFloat, sharesFloat) returns (Float f) {
             success = true;
             actual = LibDecimalFloat.toFixedDecimalLossless(f, 18);
         } catch {}
@@ -143,7 +151,7 @@ contract LibERC4626Test is Test {
 
         bool success;
         uint256 actual;
-        try LibERC4626.convertToShares(vaultFloat, assetsFloat) returns (Float f) {
+        try this._convertToShares(vaultFloat, assetsFloat) returns (Float f) {
             success = true;
             actual = LibDecimalFloat.toFixedDecimalLossless(f, 18);
         } catch {}
