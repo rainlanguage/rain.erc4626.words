@@ -39,9 +39,11 @@ library LibERC4626 {
         address assetToken = IERC4626Minimal(vault).asset();
         uint8 assetDecimals = IERC20MetadataMinimal(assetToken).decimals();
 
+        // slither-disable-next-line unused-return
         (uint256 sharesRaw,) = LibDecimalFloat.toFixedDecimalLossy(sharesFloat, shareDecimals);
         uint256 assetsRaw = IERC4626Minimal(vault).convertToAssets(sharesRaw);
 
+        // slither-disable-next-line unused-return
         (Float assetsFloat,) = LibDecimalFloat.fromFixedDecimalLossyPacked(assetsRaw, assetDecimals);
         return assetsFloat;
     }
@@ -61,9 +63,11 @@ library LibERC4626 {
         uint8 assetDecimals = IERC20MetadataMinimal(assetToken).decimals();
         uint8 shareDecimals = IERC4626Minimal(vault).decimals();
 
+        // slither-disable-next-line unused-return
         (uint256 assetsRaw,) = LibDecimalFloat.toFixedDecimalLossy(assetsFloat, assetDecimals);
         uint256 sharesRaw = IERC4626Minimal(vault).convertToShares(assetsRaw);
 
+        // slither-disable-next-line unused-return
         (Float sharesFloat,) = LibDecimalFloat.fromFixedDecimalLossyPacked(sharesRaw, shareDecimals);
         return sharesFloat;
     }
