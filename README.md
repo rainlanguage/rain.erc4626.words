@@ -75,10 +75,10 @@ forge build
 forge test
 ```
 
-### Regenerate pointers
+### Regenerate meta and pointer artifacts
 
-Run the prelude to produce the CBOR-encoded meta, then regenerate the pointer
-constants:
+Two separate steps must run in order: first regenerate the CBOR-encoded meta,
+then regenerate the pointer constants (which read the meta):
 
 ```sh
 ./script/build.sh
@@ -93,10 +93,10 @@ nix run .#erc4626-words-prelude
 nix develop github:rainlanguage/rainix#sol-shell -c forge script script/BuildPointers.sol
 ```
 
-The generated file `src/generated/ERC4626Words.pointers.sol` and
+The generated files `src/generated/ERC4626Words.pointers.sol` and
 `meta/ERC4626Words.rain.meta` must be committed. The **Git is clean** CI job
-runs `script/build.sh`, `script/BuildPointers.sol`, format, and fails on
-`git diff --exit-code`.
+calls the reusable `rainix-copy-artifacts` workflow, which re-runs these steps
+and fails with `git diff --exit-code` if any committed file has drifted.
 
 ### Deploy
 
