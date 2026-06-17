@@ -22,7 +22,9 @@ contract ERC4626WordsPointersTest is Test {
     }
 
     function testOpcodeFunctionPointersMatchCommitted() external view {
-        assertEq(words.buildOpcodeFunctionPointers(), OPCODE_FUNCTION_POINTERS, "opcode pointers drifted from committed");
+        assertEq(
+            words.buildOpcodeFunctionPointers(), OPCODE_FUNCTION_POINTERS, "opcode pointers drifted from committed"
+        );
     }
 
     function testIntegrityFunctionPointersMatchCommitted() external view {
