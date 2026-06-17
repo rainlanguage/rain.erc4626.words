@@ -36,11 +36,11 @@ contract LibERC4626SubParserAuthoringMetaTest is Test {
     function testAuthoringMetaV2WordIndexOrdering() external pure {
         AuthoringMetaV2[] memory meta = abi.decode(LibERC4626SubParser.authoringMetaV2(), (AuthoringMetaV2[]));
         assertTrue(
-            meta[0].word != meta[1].word,
-            "word names must be distinct (a swapped index would produce identical words)"
+            meta[0].word != meta[1].word, "word names must be distinct (a swapped index would produce identical words)"
         );
         assertTrue(
-            meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS].word != meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES].word,
+            meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS].word
+                != meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES].word,
             "convert-to-assets and convert-to-shares must be at different indexes"
         );
     }
