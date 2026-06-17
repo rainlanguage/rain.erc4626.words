@@ -82,4 +82,20 @@ contract LibOpERC4626ConvertToSharesTest is Test {
 
         assertTrue(StackItem.unwrap(outputs[0]) != bytes32(0), "output should be non-zero for non-zero input");
     }
+
+    function testRunRoundsSharesDownOnInexactRatio() external {
+        // assetsPerShare = 1e18 + 1: 1 raw asset-unit → 1*1e18/(1e18+1) = 0 (floor).
+        MockERC4626 oddVault = new MockERC4626(18, address(asset), 1e18 + 1);
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(oddVault)))), 0)));
+        // Float(1,-18) = 1e-18 whole assets = 1 raw asset unit
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, -18)));
+
+        StackItem[] memory outputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
+
+        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        // 1 * 1e18 / (1e18+1) = 0 (floor): one raw asset unit produces 0 raw share units
+        assertEq(sharesRaw, 0, "convertToShares must round shares-out DOWN toward zero");
+    }
 }
