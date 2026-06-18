@@ -6,6 +6,8 @@ import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interfa
 import {Float} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {LibERC4626} from "../../erc4626/LibERC4626.sol";
 
+error UnexpectedInputs(uint256 expected, uint256 actual);
+
 library LibOpERC4626ConvertToAssets {
     /// Extern integrity for erc4626-convert-to-assets.
     /// Always requires 2 inputs (vault address, shares) and produces 1 output (assets).
@@ -18,6 +20,7 @@ library LibOpERC4626ConvertToAssets {
     /// ERC-4626 convertToAssets, and pushes the resulting asset amount.
     /// @param inputs the inputs to the extern: [vault address as Float, shares as Float].
     function run(OperandV2, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
+        if (inputs.length < 2) revert UnexpectedInputs(2, inputs.length);
         Float vaultFloat;
         Float sharesFloat;
         assembly ("memory-safe") {
