@@ -4,6 +4,7 @@ pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {
+    FORK_RPC_URL_BASE,
     FORK_BLOCK_BASE,
     WT_NVDA,
     WT_AMZN,
@@ -39,7 +40,7 @@ interface IERC20Fork {
 
 contract ERC4626WordsForkTest is Test {
     function setUp() external {
-        vm.createSelectFork("base", FORK_BLOCK_BASE);
+        vm.createSelectFork(vm.envOr("FORK_RPC_URL_BASE", FORK_RPC_URL_BASE), FORK_BLOCK_BASE);
     }
 
     function assetsToShares(address vaultAddress, uint256 assetsRaw) internal view returns (uint256 sharesRaw) {

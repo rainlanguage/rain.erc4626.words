@@ -2,6 +2,8 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
+string constant FORK_RPC_URL_BASE = "https://base.gateway.tenderly.co";
+
 uint256 constant FORK_BLOCK_BASE = 46360198;
 
 address constant WT_NVDA = 0xFb5B41acdbA20a3230F84BE995173CFb98b8D6E7;
