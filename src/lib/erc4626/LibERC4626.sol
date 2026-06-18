@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: LicenseRef-DCL-1.0
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
-pragma solidity ^0.8.25;
+pragma solidity =0.8.25;
 
 import {LibDecimalFloat, Float} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 
-/// @dev Minimal ERC-4626 interface covering only the conversion functions and
-/// metadata needed by the Rain words.
-interface IERC4626Minimal {
+/// @dev Minimal interface for any token that exposes decimal precision.
+/// Shared by both the vault (for share decimals) and the underlying asset
+/// (for asset decimals) to avoid declaring the identical decimals() selector twice.
+interface IDecimalsMinimal {
     function decimals() external view returns (uint8);
+}
+
+/// @dev Minimal ERC-4626 interface covering only the conversion functions and
+/// vault metadata needed by the Rain words.
+interface IERC4626Minimal is IDecimalsMinimal {
     function asset() external view returns (address);
     function convertToAssets(uint256 shares) external view returns (uint256 assets);
     function convertToShares(uint256 assets) external view returns (uint256 shares);
-}
-
-/// @dev Minimal ERC-20 metadata interface for reading the underlying asset's
-/// decimal precision.
-interface IERC20MetadataMinimal {
-    function decimals() external view returns (uint8);
 }
 
 /// @title LibERC4626
@@ -35,7 +35,7 @@ library LibERC4626 {
 
         uint8 shareDecimals = IERC4626Minimal(vault).decimals();
         address assetToken = IERC4626Minimal(vault).asset();
-        uint8 assetDecimals = IERC20MetadataMinimal(assetToken).decimals();
+        uint8 assetDecimals = IDecimalsMinimal(assetToken).decimals();
 
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, shareDecimals);
         uint256 assetsRaw = IERC4626Minimal(vault).convertToAssets(sharesRaw);
@@ -53,7 +53,7 @@ library LibERC4626 {
         address vault = address(uint160(LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0)));
 
         address assetToken = IERC4626Minimal(vault).asset();
-        uint8 assetDecimals = IERC20MetadataMinimal(assetToken).decimals();
+        uint8 assetDecimals = IDecimalsMinimal(assetToken).decimals();
         uint8 shareDecimals = IERC4626Minimal(vault).decimals();
 
         uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(assetsFloat, assetDecimals);
