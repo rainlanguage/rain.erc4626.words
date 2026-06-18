@@ -6,6 +6,7 @@ import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {LibOpERC4626ConvertToAssets} from "src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
+import {LossyConversionFromFloat} from "rain-math-float-0.1.1/src/error/ErrDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
 
 contract LibOpERC4626ConvertToAssetsTest is Test {
@@ -15,6 +16,10 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
     function setUp() external {
         asset = new MockERC20(18);
         vault = new MockERC4626(18, address(asset), 1e18);
+    }
+
+    function _callRunAssets(StackItem[] memory inputs) external view returns (StackItem[] memory) {
+        return LibOpERC4626ConvertToAssets.run(OperandV2.wrap(0), inputs);
     }
 
     function testIntegrity(OperandV2 operand, uint256 inputs, uint256 outputs) external pure {
@@ -81,5 +86,24 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
         StackItem[] memory outputs = LibOpERC4626ConvertToAssets.run(OperandV2.wrap(0), inputs);
 
         assertTrue(StackItem.unwrap(outputs[0]) != bytes32(0), "output should be non-zero for non-zero input");
+    }
+
+    function testRunRevertsOnNonIntegerVaultFloat() external {
+        StackItem[] memory inputs = new StackItem[](2);
+        // vaultFloat = 0.5 — not representable as a uint160 address integer
+        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(5, -1)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(5), int256(-1)));
+        this._callRunAssets(inputs);
+    }
+
+    function testRunRevertsOnLossySharesInput() external {
+        // vault with 0 share decimals; 0.5 shares cannot be represented losslessly at 0 decimals
+        MockERC4626 v0 = new MockERC4626(0, address(asset), 1);
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(v0)))), 0)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(5, -1)));
+        vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(5), int256(-1)));
+        this._callRunAssets(inputs);
     }
 }
