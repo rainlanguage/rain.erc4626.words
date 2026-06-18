@@ -3,8 +3,7 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
-import {ERC4626SubParserExternWrapper} from
-    "test/src/abstract/ERC4626SubParser.externWrapper.sol";
+import {ERC4626SubParserExternWrapper} from "test/src/abstract/ERC4626SubParser.externWrapper.sol";
 
 /// @notice Pins extern() to address(this) for ERC4626Words.
 /// erc4626ConvertToAssetsSubParser and erc4626ConvertToSharesSubParser are
