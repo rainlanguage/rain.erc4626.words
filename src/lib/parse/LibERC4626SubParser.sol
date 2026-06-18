@@ -15,12 +15,12 @@ library LibERC4626SubParser {
 
         meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS] = AuthoringMetaV2(
             "erc4626-convert-to-assets",
-            "Converts ERC-4626 vault shares to underlying assets. Accepts 2 inputs: the vault contract address and the amount of shares as a float. Returns 1 output: the equivalent amount of underlying assets as a float. The conversion uses the vault's own convertToAssets function and respects the share and asset token decimals."
+            "Converts ERC-4626 vault shares to underlying assets. Accepts 2 inputs: the vault contract address and the amount of shares as a float. The shares amount must be exactly representable in the vault's share decimals (reverts on precision loss). Returns 1 output: the equivalent amount of underlying assets as a float. The conversion uses the vault's own convertToAssets function and respects the share and asset token decimals."
         );
 
         meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES] = AuthoringMetaV2(
             "erc4626-convert-to-shares",
-            "Converts underlying assets to ERC-4626 vault shares. Accepts 2 inputs: the vault contract address and the amount of underlying assets as a float. Returns 1 output: the equivalent number of vault shares as a float. The conversion uses the vault's own convertToShares function and respects the asset and share token decimals."
+            "Converts underlying assets to ERC-4626 vault shares. Accepts 2 inputs: the vault contract address and the amount of underlying assets as a float. The assets amount must be exactly representable in the vault's asset decimals (reverts on precision loss). Returns 1 output: the equivalent number of vault shares as a float. The conversion uses the vault's own convertToShares function and respects the asset and share token decimals."
         );
 
         return abi.encode(meta);
