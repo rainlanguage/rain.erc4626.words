@@ -124,4 +124,30 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(5), int256(-1)));
         this._callRunShares(inputs);
     }
+
+    function testRunFuzzConvertToSharesConsistency(uint32 assetsWhole, uint64 rate) external {
+        rate = uint64(bound(rate, 1, type(uint64).max));
+        MockERC4626 fv = new MockERC4626(18, address(asset), uint256(rate));
+
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(fv)))), 0)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(assetsWhole)), 0)));
+
+        uint256 assetsRaw = uint256(assetsWhole) * 1e18;
+        // Skip cases where the vault multiply overflows.
+        bool overflow = assetsRaw != 0 && 1e18 > type(uint256).max / assetsRaw;
+        if (overflow) return;
+        uint256 expected = fv.convertToShares(assetsRaw);
+
+        bool success;
+        uint256 actual;
+        try this._callRunShares(inputs) returns (StackItem[] memory out) {
+            success = true;
+            actual = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(out[0])), 18);
+        } catch {}
+
+        if (success) {
+            assertEq(actual, expected, "run() convertToShares must match vault directly");
+        }
+    }
 }

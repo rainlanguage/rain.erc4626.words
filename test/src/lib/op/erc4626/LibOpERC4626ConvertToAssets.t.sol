@@ -106,4 +106,34 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
         vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(5), int256(-1)));
         this._callRunAssets(inputs);
     }
+
+    function testRunConvertToAssetsMonotonicFuzz(uint32 sharesA, uint32 sharesB) external {
+        vm.assume(sharesA <= sharesB);
+
+        StackItem[] memory inA = new StackItem[](2);
+        inA[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inA[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(sharesA)), 0)));
+
+        StackItem[] memory inB = new StackItem[](2);
+        inB[0] = inA[0];
+        inB[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(sharesB)), 0)));
+
+        bool successA;
+        uint256 assetsA;
+        try this._callRunAssets(inA) returns (StackItem[] memory out) {
+            successA = true;
+            assetsA = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(out[0])), 18);
+        } catch {}
+
+        bool successB;
+        uint256 assetsB;
+        try this._callRunAssets(inB) returns (StackItem[] memory out) {
+            successB = true;
+            assetsB = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(out[0])), 18);
+        } catch {}
+
+        if (successA && successB) {
+            assertLe(assetsA, assetsB, "convertToAssets must be monotonic: more shares => more assets");
+        }
+    }
 }
