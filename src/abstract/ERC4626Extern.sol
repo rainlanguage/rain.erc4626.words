@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-DCL-1.0
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
-pragma solidity ^0.8.25;
+pragma solidity =0.8.25;
 
 import {BaseRainlangExtern, OperandV2, StackItem} from "rainlang-0.1.2/src/abstract/BaseRainlangExtern.sol";
 import {LibOpERC4626ConvertToAssets} from "../lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
@@ -11,7 +11,7 @@ import {OPCODE_FUNCTION_POINTERS, INTEGRITY_FUNCTION_POINTERS} from "../generate
 uint256 constant OPCODE_ERC4626_CONVERT_TO_ASSETS = 0;
 uint256 constant OPCODE_ERC4626_CONVERT_TO_SHARES = 1;
 
-uint256 constant OPCODE_FUNCTION_POINTERS_LENGTH = 2;
+uint256 constant ERC4626_WORD_COUNT = 2;
 
 abstract contract ERC4626Extern is BaseRainlangExtern {
     function opcodeFunctionPointers() internal pure override returns (bytes memory) {
@@ -25,7 +25,7 @@ abstract contract ERC4626Extern is BaseRainlangExtern {
     function buildOpcodeFunctionPointers() external pure returns (bytes memory) {
         function(OperandV2, StackItem[] memory) internal view returns (StackItem[] memory)[] memory fs = new function(OperandV2, StackItem[] memory)
         internal
-        view returns (StackItem[] memory)[](OPCODE_FUNCTION_POINTERS_LENGTH);
+        view returns (StackItem[] memory)[](ERC4626_WORD_COUNT);
         fs[OPCODE_ERC4626_CONVERT_TO_ASSETS] = LibOpERC4626ConvertToAssets.run;
         fs[OPCODE_ERC4626_CONVERT_TO_SHARES] = LibOpERC4626ConvertToShares.run;
 
@@ -39,7 +39,7 @@ abstract contract ERC4626Extern is BaseRainlangExtern {
     function buildIntegrityFunctionPointers() external pure returns (bytes memory) {
         function(OperandV2, uint256, uint256) internal pure returns (uint256, uint256)[] memory fs = new function(OperandV2, uint256, uint256)
         internal
-        pure returns (uint256, uint256)[](OPCODE_FUNCTION_POINTERS_LENGTH);
+        pure returns (uint256, uint256)[](ERC4626_WORD_COUNT);
         fs[OPCODE_ERC4626_CONVERT_TO_ASSETS] = LibOpERC4626ConvertToAssets.integrity;
         fs[OPCODE_ERC4626_CONVERT_TO_SHARES] = LibOpERC4626ConvertToShares.integrity;
 
