@@ -14,7 +14,11 @@ library LibOpERC4626ConvertToAssets {
     /// @param stackOutputs Not used; arity is fixed regardless of declared stack state.
     /// @return Always 2 (vault address, shares).
     /// @return Always 1 (assets).
-    function integrity(OperandV2 operand, uint256 stackInputs, uint256 stackOutputs) internal pure returns (uint256, uint256) {
+    function integrity(OperandV2 operand, uint256 stackInputs, uint256 stackOutputs)
+        internal
+        pure
+        returns (uint256, uint256)
+    {
         return (2, 1);
     }
 
