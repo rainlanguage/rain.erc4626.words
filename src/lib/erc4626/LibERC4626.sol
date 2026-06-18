@@ -29,11 +29,12 @@ library LibERC4626 {
     /// The shares amount is passed as a Rain Float with the vault's share decimals.
     ///
     /// @dev ROUNDING: Per EIP-4626, convertToAssets MUST round DOWN (floor toward
-    /// zero). Precision loss of up to 1 ulp per call favours the party the assets
-    /// are paid TO. When this word is used to price a Rain order where the order
-    /// owner OFFERS assets, the floor rounding benefits the interactive counterparty
-    /// (the taker), not the order owner. An adversarial vault can engineer its
-    /// exchange rate so that the truncated remainder is maximal on every call.
+    /// zero). Precision loss of up to 1 ulp per call favours the caller
+    /// (order owner / share-holder): fewer assets are returned than the exact
+    /// mathematical result, so any Rain order using this word to price its output
+    /// pays out less than the ideal rate — the caller benefits, not the taker.
+    /// An adversarial vault can engineer its exchange rate so that the truncated
+    /// remainder is maximal on every call.
     ///
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param sharesFloat The number of shares to convert, as a Rain Float.
@@ -57,11 +58,12 @@ library LibERC4626 {
     /// The assets amount is passed as a Rain Float with the underlying asset's decimals.
     ///
     /// @dev ROUNDING: Per EIP-4626, convertToShares MUST round DOWN (floor toward
-    /// zero). Precision loss of up to 1 ulp per call favours the party the shares
-    /// are paid TO. When this word is used to price a Rain order where the order
-    /// owner OFFERS shares, the floor rounding benefits the interactive counterparty
-    /// (the taker), not the order owner. An adversarial vault can engineer its
-    /// exchange rate so that the truncated remainder is maximal on every call.
+    /// zero). Precision loss of up to 1 ulp per call favours the caller
+    /// (order owner / share-holder): fewer shares are returned than the exact
+    /// mathematical result, so any Rain order using this word to price its output
+    /// pays out less than the ideal rate — the caller benefits, not the taker.
+    /// An adversarial vault can engineer its exchange rate so that the truncated
+    /// remainder is maximal on every call.
     ///
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param assetsFloat The amount of underlying assets to convert, as a Rain Float.
