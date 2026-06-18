@@ -7,7 +7,8 @@ import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626Conver
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {LossyConversionFromFloat} from "rain-math-float-0.1.1/src/error/ErrDecimalFloat.sol";
-import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
+import {MockERC4626} from "test/utils/MockERC4626.sol";
+import {MockERC20} from "test/utils/MockERC20.sol";
 
 contract LibOpERC4626ConvertToSharesTest is Test {
     MockERC20 internal asset;
