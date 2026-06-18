@@ -7,6 +7,7 @@ import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626Conver
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
+import {UnexpectedInputs} from "src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 
 contract LibOpERC4626ConvertToSharesTest is Test {
     MockERC20 internal asset;
@@ -81,5 +82,23 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         StackItem[] memory outputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
 
         assertTrue(StackItem.unwrap(outputs[0]) != bytes32(0), "output should be non-zero for non-zero input");
+    }
+
+    function _callRunShares(StackItem[] memory inputs) external view returns (StackItem[] memory) {
+        return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
+    }
+
+    function testRunRevertsOnOneInput() external {
+        StackItem[] memory inputs = new StackItem[](1);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        vm.expectRevert(abi.encodeWithSelector(UnexpectedInputs.selector, uint256(2), uint256(1)));
+        this._callRunShares(inputs);
+    }
+
+    function testRunRevertsOnZeroInputs() external {
+        StackItem[] memory inputs = new StackItem[](0);
+        vm.expectRevert(abi.encodeWithSelector(UnexpectedInputs.selector, uint256(2), uint256(0)));
+        this._callRunShares(inputs);
     }
 }
