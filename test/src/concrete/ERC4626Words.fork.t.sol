@@ -26,6 +26,7 @@ import {LibOpERC4626ConvertToAssets} from "src/lib/op/erc4626/LibOpERC4626Conver
 import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
+import {VaultFloat} from "test/utils/VaultFloat.sol";
 
 interface IERC4626Fork {
     function decimals() external view returns (uint8);
@@ -47,8 +48,7 @@ contract ERC4626WordsForkTest is Test {
         uint8 assetDecimals_ = IERC20Fork(vault_.asset()).decimals();
 
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(vaultAddress))), 0)));
+        inputs[0] = VaultFloat.packStackItem(vaultAddress);
         inputs[1] =
             StackItem.wrap(Float.unwrap(LibDecimalFloat.fromFixedDecimalLosslessPacked(assetsRaw, assetDecimals_)));
 
@@ -62,8 +62,7 @@ contract ERC4626WordsForkTest is Test {
         uint8 assetDecimals_ = IERC20Fork(vault_.asset()).decimals();
 
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(vaultAddress))), 0)));
+        inputs[0] = VaultFloat.packStackItem(vaultAddress);
         inputs[1] =
             StackItem.wrap(Float.unwrap(LibDecimalFloat.fromFixedDecimalLosslessPacked(sharesRaw, shareDecimals_)));
 
