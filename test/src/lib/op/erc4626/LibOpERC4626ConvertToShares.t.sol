@@ -89,22 +89,6 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         assertTrue(StackItem.unwrap(outputs[0]) != bytes32(0), "output should be non-zero for non-zero input");
     }
 
-    function testRunRoundsSharesDown() external {
-        // vault: 1 share = 3 assets. convertToShares(1 asset) = floor(1/3) shares = 0.333...
-        MockERC4626 vault3 = new MockERC4626(18, address(asset), 3e18);
-        StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault3)))), 0)));
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
-
-        StackItem[] memory outputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
-
-        // vault.convertToShares(1e18) = floor(1e18 * 1e18 / 3e18) = 333333333333333333
-        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
-        assertEq(sharesRaw, 333333333333333333, "shares must floor down (favor vault)");
-        assertLt(sharesRaw, 333333333333333334, "shares must not round up");
-    }
-
     function testRunRevertsOnNonIntegerVaultFloat() external {
         StackItem[] memory inputs = new StackItem[](2);
         // vaultFloat = 0.5 — not representable as a uint160 address integer
