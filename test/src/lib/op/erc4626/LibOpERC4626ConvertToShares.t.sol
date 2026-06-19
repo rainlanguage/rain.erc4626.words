@@ -3,6 +3,7 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
+import {stdError} from "forge-std-1.16.1/src/StdError.sol";
 import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
@@ -100,6 +101,19 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         assertEq(sharesRaw, 0, "convertToShares must round shares-out DOWN toward zero");
     }
 
+    function testRunZeroAssets() external view {
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(0, 0)));
+
+        StackItem[] memory outputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
+
+        assertEq(outputs.length, 1);
+        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        assertEq(sharesRaw, 0, "0 assets must convert to 0 shares");
+    }
+
     function testRunMismatchedDecimals() external {
         // 6-decimal asset, 18-decimal vault share; assetsPerShare = 1e6 (1 asset per share at 6 dec).
         MockERC20 asset6 = new MockERC20(6);
@@ -123,6 +137,18 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
     }
 
+    function testRunZeroSupplyVaultReverts() external {
+        MockERC4626 emptyVault = new MockERC4626(18, address(asset), 0);
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] = StackItem.wrap(
+            Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(emptyVault)))), 0))
+        );
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+
+        vm.expectRevert(stdError.divisionError);
+        this.runExternal(inputs);
+    }
+
     function testRunRevertsOnLossyAssetInput() external {
         StackItem[] memory inputs = new StackItem[](2);
         inputs[0] =
@@ -131,6 +157,22 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, -19)));
         vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(1), int256(-19)));
         this.runExternal(inputs);
+    }
+
+    function testRunRoundsSharesDown() external {
+        // 1 share = 3 assets → 1 asset = 0.333... shares; must round DOWN (favors protocol).
+        MockERC4626 vault3 = new MockERC4626(18, address(asset), 3e18);
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault3)))), 0)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+
+        StackItem[] memory outputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
+
+        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        // floor(1e18 * 1e18 / 3e18) = 333333333333333333
+        assertEq(sharesRaw, 333333333333333333, "shares must round DOWN, favoring the protocol");
+        assertTrue(sharesRaw < 333333333333333334, "must not round up toward the interactive caller");
     }
 
     function testRunRoundsDownOnPrecisionLoss() external {
