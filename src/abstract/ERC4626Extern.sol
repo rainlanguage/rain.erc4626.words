@@ -23,9 +23,8 @@ abstract contract ERC4626Extern is BaseRainlangExtern {
     }
 
     function buildOpcodeFunctionPointers() external pure returns (bytes memory) {
-        function(OperandV2, StackItem[] memory) internal view returns (StackItem[] memory)[] memory fs = new function(OperandV2, StackItem[] memory)
-        internal
-        view returns (StackItem[] memory)[](ERC4626_WORD_COUNT);
+        // forgefmt: disable-next-line
+        function(OperandV2, StackItem[] memory) internal view returns (StackItem[] memory)[] memory fs = new function(OperandV2, StackItem[] memory) internal view returns (StackItem[] memory)[](ERC4626_WORD_COUNT);
         fs[OPCODE_ERC4626_CONVERT_TO_ASSETS] = LibOpERC4626ConvertToAssets.run;
         fs[OPCODE_ERC4626_CONVERT_TO_SHARES] = LibOpERC4626ConvertToShares.run;
 
@@ -37,9 +36,8 @@ abstract contract ERC4626Extern is BaseRainlangExtern {
     }
 
     function buildIntegrityFunctionPointers() external pure returns (bytes memory) {
-        function(OperandV2, uint256, uint256) internal pure returns (uint256, uint256)[] memory fs = new function(OperandV2, uint256, uint256)
-        internal
-        pure returns (uint256, uint256)[](ERC4626_WORD_COUNT);
+        // forgefmt: disable-next-line
+        function(OperandV2, uint256, uint256) internal pure returns (uint256, uint256)[] memory fs = new function(OperandV2, uint256, uint256) internal pure returns (uint256, uint256)[](ERC4626_WORD_COUNT);
         fs[OPCODE_ERC4626_CONVERT_TO_ASSETS] = LibOpERC4626ConvertToAssets.integrity;
         fs[OPCODE_ERC4626_CONVERT_TO_SHARES] = LibOpERC4626ConvertToShares.integrity;
 
