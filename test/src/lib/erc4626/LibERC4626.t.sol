@@ -99,4 +99,36 @@ contract LibERC4626Test is Test {
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
         assertEq(sharesRaw, 1e18, "1 USDC should be 1 share in a 1:1 USDC vault");
     }
+
+    function testConvertToAssetsZeroShares() external view {
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
+        Float zeroShares = LibDecimalFloat.packLossless(0, 0);
+        Float assetsFloat = LibERC4626.convertToAssets(vaultFloat, zeroShares);
+        assertEq(LibDecimalFloat.toFixedDecimalLossless(assetsFloat, 18), 0, "0 shares must yield 0 assets");
+    }
+
+    function testConvertToSharesZeroAssets() external view {
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
+        Float zeroAssets = LibDecimalFloat.packLossless(0, 0);
+        Float sharesFloat = LibERC4626.convertToShares(vaultFloat, zeroAssets);
+        assertEq(LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18), 0, "0 assets must yield 0 shares");
+    }
+
+    function testConvertToAssetsLargeInput() external view {
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
+        // 1e9 whole shares: well within int64 range, exercises large fixed-point packing.
+        Float sharesFloat = LibDecimalFloat.packLossless(1000000000, 0);
+        Float assetsFloat = LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+        uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(assetsFloat, 18);
+        assertEq(assetsRaw, 1e27, "1e9 shares must yield 1e9 assets (1e27 raw) in a 1:1 vault");
+    }
+
+    function testConvertToSharesLargeInput() external view {
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
+        // 1e9 whole assets: exercises large fixed-point packing for convertToShares.
+        Float assetsFloat = LibDecimalFloat.packLossless(1000000000, 0);
+        Float sharesFloat = LibERC4626.convertToShares(vaultFloat, assetsFloat);
+        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
+        assertEq(sharesRaw, 1e27, "1e9 assets must yield 1e9 shares (1e27 raw) in a 1:1 vault");
+    }
 }
