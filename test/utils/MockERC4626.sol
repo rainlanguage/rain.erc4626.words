@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity ^0.8.25;
 
-import {MockERC20} from "test/utils/MockERC20.sol";
+import {MockERC20} from "./MockERC20.sol";
 
 /// @dev Minimal mock ERC-4626 vault for testing.
 /// Exchange rate is expressed as assetsPerShare with assetDecimals precision,
