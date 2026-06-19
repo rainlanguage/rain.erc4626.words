@@ -49,4 +49,13 @@ contract ERC4626WordsMetaTest is Test {
     function testSupportsInterfaceReturnsFalseForUnknown() external view {
         assertFalse(words.supportsInterface(0xdeadbeef), "must return false for unknown interface ID");
     }
+
+    /// @notice describedByMetaV1() must equal keccak256(meta/ERC4626Words.rain.meta).
+    /// This pins the on-chain hash to the actual CBOR bytes so a stale DESCRIBED_BY_META_HASH
+    /// or an out-of-sync meta file is caught immediately by CI.
+    function testDescribedByMetaHashMatchesCBORFile() external view {
+        bytes memory metaBytes = vm.readFileBinary("meta/ERC4626Words.rain.meta");
+        bytes32 fileHash = keccak256(metaBytes);
+        assertEq(words.describedByMetaV1(), fileHash, "on-chain hash must equal keccak256 of CBOR meta file");
+    }
 }
