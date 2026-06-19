@@ -4,7 +4,6 @@ pragma solidity ^0.8.25;
 
 import {MockERC20} from "./MockERC20.sol";
 
-
 /// @dev Minimal mock ERC-4626 vault for testing.
 /// Exchange rate is expressed as assetsPerShare with assetDecimals precision,
 /// i.e. assetsPerShare = (assets for 1 whole share) * 10**assetDecimals.
