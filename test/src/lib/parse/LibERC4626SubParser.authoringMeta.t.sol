@@ -4,12 +4,13 @@ pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {AuthoringMetaV2} from "rain-interpreter-interface-0.1.0/src/interface/deprecated/v1/IParserV1.sol";
+import {LibGenParseMeta} from "rain-interpreter-interface-0.1.0/src/lib/codegen/LibGenParseMeta.sol";
 import {LibERC4626SubParser, SUB_PARSER_WORD_PARSERS_LENGTH} from "src/lib/parse/LibERC4626SubParser.sol";
 import {
     SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS,
     SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES
 } from "src/lib/parse/LibERC4626SubParser.sol";
-import {DESCRIBED_BY_META_HASH} from "src/generated/ERC4626Words.pointers.sol";
+import {DESCRIBED_BY_META_HASH, PARSE_META, PARSE_META_BUILD_DEPTH} from "src/generated/ERC4626Words.pointers.sol";
 
 /// @notice Tests that authoringMetaV2() is well-formed and consistent with committed artifacts.
 contract LibERC4626SubParserAuthoringMetaTest is Test {
@@ -57,6 +58,18 @@ contract LibERC4626SubParserAuthoringMetaTest is Test {
             keccak256(metaContent),
             DESCRIBED_BY_META_HASH,
             "DESCRIBED_BY_META_HASH must equal keccak256 of committed meta file"
+        );
+    }
+
+    function testParseMetaMatchesAuthoringMeta() external pure {
+        bytes memory rebuilt = LibGenParseMeta.buildParseMetaV2(
+            abi.decode(LibERC4626SubParser.authoringMetaV2(), (AuthoringMetaV2[])),
+            PARSE_META_BUILD_DEPTH
+        );
+        assertEq(
+            keccak256(rebuilt),
+            keccak256(PARSE_META),
+            "PARSE_META drifted from authoringMetaV2 -- regenerate pointers"
         );
     }
 }
