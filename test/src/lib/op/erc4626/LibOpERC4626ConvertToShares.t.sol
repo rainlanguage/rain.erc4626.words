@@ -98,7 +98,6 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         assertEq(sharesRaw, 0, "0 assets must convert to 0 shares");
     }
 
-
     function runExternal(StackItem[] memory inputs) external view returns (StackItem[] memory) {
         return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
     }
