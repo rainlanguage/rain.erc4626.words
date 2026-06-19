@@ -63,13 +63,10 @@ contract LibERC4626SubParserAuthoringMetaTest is Test {
 
     function testParseMetaMatchesAuthoringMeta() external pure {
         bytes memory rebuilt = LibGenParseMeta.buildParseMetaV2(
-            abi.decode(LibERC4626SubParser.authoringMetaV2(), (AuthoringMetaV2[])),
-            PARSE_META_BUILD_DEPTH
+            abi.decode(LibERC4626SubParser.authoringMetaV2(), (AuthoringMetaV2[])), PARSE_META_BUILD_DEPTH
         );
         assertEq(
-            keccak256(rebuilt),
-            keccak256(PARSE_META),
-            "PARSE_META drifted from authoringMetaV2 -- regenerate pointers"
+            keccak256(rebuilt), keccak256(PARSE_META), "PARSE_META drifted from authoringMetaV2 -- regenerate pointers"
         );
     }
 }
