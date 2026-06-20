@@ -153,7 +153,6 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
         }
     }
 
-
     function testRunZeroShares() external view {
         StackItem[] memory inputs = new StackItem[](2);
         inputs[0] =
