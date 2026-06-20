@@ -41,7 +41,7 @@ interface IERC20Fork {
 
 contract ERC4626WordsForkTest is Test {
     function setUp() external {
-        vm.createSelectFork(FORK_RPC_URL_BASE, FORK_BLOCK_BASE);
+        vm.createSelectFork(vm.envOr("FORK_RPC_URL_BASE", FORK_RPC_URL_BASE), FORK_BLOCK_BASE);
     }
 
     /// @dev Encode assets (raw) as a Float and run convertToShares, returning raw shares.
