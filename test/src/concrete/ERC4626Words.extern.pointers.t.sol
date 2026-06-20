@@ -10,6 +10,14 @@ import {
     SUB_PARSER_WORD_PARSERS,
     OPERAND_HANDLER_FUNCTION_POINTERS
 } from "src/generated/ERC4626Words.pointers.sol";
+import {
+    OPCODE_ERC4626_CONVERT_TO_ASSETS,
+    OPCODE_ERC4626_CONVERT_TO_SHARES,
+    OPCODE_FUNCTION_POINTERS_LENGTH
+} from "src/abstract/ERC4626Extern.sol";
+import {LibOpERC4626ConvertToAssets} from "src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
+import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
+import {OperandV2} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 
 contract ERC4626WordsExternPointersTest is Test {
     ERC4626Words internal words;
@@ -48,5 +56,29 @@ contract ERC4626WordsExternPointersTest is Test {
             OPERAND_HANDLER_FUNCTION_POINTERS,
             "committed OPERAND_HANDLER_FUNCTION_POINTERS drifted from freshly-built table"
         );
+    }
+
+    /// @dev Each 2-byte integrity slot must be non-zero; zero means an opcode was never assigned.
+    function testIntegritySlotsAreDistinctlyAssigned() external view {
+        bytes memory pointers = words.buildIntegrityFunctionPointers();
+        assertEq(pointers.length, OPCODE_FUNCTION_POINTERS_LENGTH * 2, "integrity table wrong length");
+        for (uint256 i = 0; i < OPCODE_FUNCTION_POINTERS_LENGTH; i++) {
+            uint16 slot = (uint16(uint8(pointers[i * 2])) << 8) | uint16(uint8(pointers[i * 2 + 1]));
+            assertTrue(slot != 0, "integrity slot must be non-zero (opcode not assigned)");
+        }
+    }
+
+    /// @dev convertToAssets integrity must return exactly (inputs=2, outputs=1).
+    function testIntegrityConvertToAssetsReturns2Inputs1Output() external pure {
+        (uint256 inputs, uint256 outputs) = LibOpERC4626ConvertToAssets.integrity(OperandV2.wrap(0), 0, 0);
+        assertEq(inputs, 2, "convertToAssets integrity: must declare 2 inputs");
+        assertEq(outputs, 1, "convertToAssets integrity: must declare 1 output");
+    }
+
+    /// @dev convertToShares integrity must return exactly (inputs=2, outputs=1).
+    function testIntegrityConvertToSharesReturns2Inputs1Output() external pure {
+        (uint256 inputs, uint256 outputs) = LibOpERC4626ConvertToShares.integrity(OperandV2.wrap(0), 0, 0);
+        assertEq(inputs, 2, "convertToShares integrity: must declare 2 inputs");
+        assertEq(outputs, 1, "convertToShares integrity: must declare 1 output");
     }
 }
