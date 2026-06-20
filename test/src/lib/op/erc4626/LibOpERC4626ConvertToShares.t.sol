@@ -7,7 +7,6 @@ import {stdError} from "forge-std-1.16.1/src/StdError.sol";
 import {LibOpERC4626ConvertToShares} from "src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
-import {LossyConversionFromFloat} from "rain-math-float-0.1.1/src/error/ErrDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
 
 contract LibOpERC4626ConvertToSharesTest is Test {
@@ -133,14 +132,16 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         this.runExternal(inputs);
     }
 
-    function testRunRevertsOnLossyAssetInput() external {
+    function testRunZeroOutputForSubDecimalAssetInput() external {
         StackItem[] memory inputs = new StackItem[](2);
         inputs[0] =
             StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
-        // 1e-19 assets: finer than the asset's 18 decimals, cannot be converted losslessly to uint256
+        // 1e-19 assets: finer than the asset's 18 decimals, truncates to 0 raw assets
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, -19)));
-        vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(1), int256(-19)));
-        this.runExternal(inputs);
+        StackItem[] memory outputs = this.runExternal(inputs);
+        assertEq(outputs.length, 1);
+        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        assertEq(sharesRaw, 0, "sub-decimal assets truncate to 0 raw assets, giving 0 shares");
     }
 
     function testRunRoundsSharesDown() external {
