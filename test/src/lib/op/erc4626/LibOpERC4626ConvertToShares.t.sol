@@ -20,6 +20,10 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         vault = new MockERC4626(18, address(asset), 1e18);
     }
 
+    function _callRunShares(StackItem[] memory inputs) external view returns (StackItem[] memory) {
+        return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
+    }
+
     function testIntegrity(OperandV2 operand, uint256 inputs, uint256 outputs) external pure {
         (uint256 calcInputs, uint256 calcOutputs) = LibOpERC4626ConvertToShares.integrity(operand, inputs, outputs);
         assertEq(calcInputs, 2);
@@ -86,10 +90,6 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         assertTrue(StackItem.unwrap(outputs[0]) != bytes32(0), "output should be non-zero for non-zero input");
     }
 
-    function _callRunShares(StackItem[] memory inputs) external view returns (StackItem[] memory) {
-        return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
-    }
-
     function testRunRevertsOnOneInput() external {
         StackItem[] memory inputs = new StackItem[](1);
         inputs[0] =
@@ -102,6 +102,53 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         StackItem[] memory inputs = new StackItem[](0);
         vm.expectRevert(abi.encodeWithSelector(UnexpectedInputs.selector, uint256(2), uint256(0)));
         this._callRunShares(inputs);
+    }
+
+    function testRunRevertsOnNonIntegerVaultFloat() external {
+        StackItem[] memory inputs = new StackItem[](2);
+        // vaultFloat = 0.5 — not representable as a uint160 address integer
+        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(5, -1)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(5), int256(-1)));
+        this._callRunShares(inputs);
+    }
+
+    function testRunRevertsOnLossyAssetsInput() external {
+        // vault with 0 asset decimals; 0.5 assets cannot be represented losslessly at 0 decimals
+        MockERC20 asset0 = new MockERC20(0);
+        MockERC4626 vault0 = new MockERC4626(0, address(asset0), 1);
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault0)))), 0)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(5, -1)));
+        vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(5), int256(-1)));
+        this._callRunShares(inputs);
+    }
+
+    function testRunFuzzConvertToSharesConsistency(uint32 assetsWhole, uint64 rate) external {
+        rate = uint64(bound(rate, 1, type(uint64).max));
+        MockERC4626 fv = new MockERC4626(18, address(asset), uint256(rate));
+
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(fv)))), 0)));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(assetsWhole)), 0)));
+
+        uint256 assetsRaw = uint256(assetsWhole) * 1e18;
+        // Skip cases where the vault multiply overflows.
+        bool overflow = assetsRaw != 0 && 1e18 > type(uint256).max / assetsRaw;
+        if (overflow) return;
+        uint256 expected = fv.convertToShares(assetsRaw);
+
+        bool success;
+        uint256 actual;
+        try this._callRunShares(inputs) returns (StackItem[] memory out) {
+            success = true;
+            actual = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(out[0])), 18);
+        } catch {}
+
+        if (success) {
+            assertEq(actual, expected, "run() convertToShares must match vault directly");
+        }
     }
 
     function testRunZeroAssets() external view {
