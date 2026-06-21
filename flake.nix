@@ -36,6 +36,8 @@
                 -l none \
                 -o meta/ERC4626Words.rain.meta \
                 ;
+              forge script --silent ./script/BuildPointers.sol;
+              forge fmt src/generated;
             '';
           };
         }
