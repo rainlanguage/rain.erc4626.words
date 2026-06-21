@@ -23,7 +23,8 @@ library LibOpERC4626ConvertToShares {
     /// ERC-4626 convertToShares, and pushes the resulting share amount.
     /// Rounding follows ERC-4626 convertToShares (rounds down, favors the vault).
     /// The OperandV2 parameter is unused; this word takes no operand-encoded configuration.
-    /// @param inputs the inputs to the extern: [vault address as Float, assets as Float].
+    /// @param inputs [vault address as Float, assets as Float interpreted at the
+    ///        underlying asset token's decimal precision].
     /// @return outputs A single-element array containing the converted shares amount as a
     ///         Rain Float, re-encoded at the vault share token's decimal precision.
     function run(OperandV2, StackItem[] memory inputs) internal view returns (StackItem[] memory) {

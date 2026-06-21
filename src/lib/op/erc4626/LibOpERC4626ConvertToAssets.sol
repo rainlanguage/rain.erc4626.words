@@ -23,7 +23,8 @@ library LibOpERC4626ConvertToAssets {
     /// ERC-4626 convertToAssets, and pushes the resulting asset amount.
     /// Rounding follows ERC-4626 convertToAssets (rounds down, favors the vault).
     /// The OperandV2 parameter is unused; this word takes no operand-encoded configuration.
-    /// @param inputs the inputs to the extern: [vault address as Float, shares as Float].
+    /// @param inputs [vault address as Float, shares as Float interpreted at the
+    ///        vault share token's decimal precision].
     /// @return outputs A single-element array containing the converted assets amount as a
     ///         Rain Float, re-encoded at the underlying asset token's decimal precision.
     function run(OperandV2, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
