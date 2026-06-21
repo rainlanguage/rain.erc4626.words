@@ -27,9 +27,19 @@ library LibERC4626 {
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The shares amount is passed as a Rain Float with the vault's share decimals.
+    ///
+    /// @dev ROUNDING: Per EIP-4626, convertToAssets MUST round DOWN (floor toward
+    /// zero). Precision loss of up to 1 ulp per call favours the caller
+    /// (order owner / share-holder): fewer assets are returned than the exact
+    /// mathematical result, so any Rain order using this word to price its output
+    /// pays out less than the ideal rate — the caller benefits, not the taker.
+    /// An adversarial vault can engineer its exchange rate so that the truncated
+    /// remainder is maximal on every call.
+    ///
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param sharesFloat The number of shares to convert, as a Rain Float.
-    /// @return The equivalent amount of underlying assets, as a Rain Float.
+    /// @return The equivalent amount of underlying assets, as a Rain Float,
+    /// floor-rounded per the vault's convertToAssets implementation.
     function convertToAssets(Float vaultFloat, Float sharesFloat) internal view returns (Float) {
         address vault = address(uint160(LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0)));
 
@@ -46,9 +56,19 @@ library LibERC4626 {
     /// @notice Converts underlying assets to vault shares via ERC-4626 convertToShares.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The assets amount is passed as a Rain Float with the underlying asset's decimals.
+    ///
+    /// @dev ROUNDING: Per EIP-4626, convertToShares MUST round DOWN (floor toward
+    /// zero). Precision loss of up to 1 ulp per call favours the caller
+    /// (order owner / share-holder): fewer shares are returned than the exact
+    /// mathematical result, so any Rain order using this word to price its output
+    /// pays out less than the ideal rate — the caller benefits, not the taker.
+    /// An adversarial vault can engineer its exchange rate so that the truncated
+    /// remainder is maximal on every call.
+    ///
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param assetsFloat The amount of underlying assets to convert, as a Rain Float.
-    /// @return The equivalent number of vault shares, as a Rain Float.
+    /// @return The equivalent number of vault shares, as a Rain Float,
+    /// floor-rounded per the vault's convertToShares implementation.
     function convertToShares(Float vaultFloat, Float assetsFloat) internal view returns (Float) {
         address vault = address(uint160(LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0)));
 
