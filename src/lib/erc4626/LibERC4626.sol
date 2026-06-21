@@ -44,12 +44,15 @@ library LibERC4626 {
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The shares amount is passed as a Rain Float with the vault's share decimals.
+    /// Share amounts with sub-decimal precision are truncated toward zero (floor) before
+    /// being forwarded to the vault, matching ERC-4626's documented floor-rounding convention.
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param sharesFloat The number of shares to convert, as a Rain Float.
     /// @return The equivalent amount of underlying assets, as a Rain Float.
     function convertToAssets(Float vaultFloat, Float sharesFloat) internal view returns (Float) {
         (IERC4626Minimal vault, uint8 shareDecimals, uint8 assetDecimals) = _decode(vaultFloat);
-        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, shareDecimals);
+        // slither-disable-next-line unused-return
+        (uint256 sharesRaw,) = LibDecimalFloat.toFixedDecimalLossy(sharesFloat, shareDecimals);
         uint256 assetsRaw = vault.convertToAssets(sharesRaw);
         return LibDecimalFloat.fromFixedDecimalLosslessPacked(assetsRaw, assetDecimals);
     }
@@ -57,12 +60,15 @@ library LibERC4626 {
     /// @notice Converts underlying assets to vault shares via ERC-4626 convertToShares.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The assets amount is passed as a Rain Float with the underlying asset's decimals.
+    /// Asset amounts with sub-decimal precision are truncated toward zero (floor) before
+    /// being forwarded to the vault, matching ERC-4626's documented floor-rounding convention.
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param assetsFloat The amount of underlying assets to convert, as a Rain Float.
     /// @return The equivalent number of vault shares, as a Rain Float.
     function convertToShares(Float vaultFloat, Float assetsFloat) internal view returns (Float) {
         (IERC4626Minimal vault, uint8 shareDecimals, uint8 assetDecimals) = _decode(vaultFloat);
-        uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(assetsFloat, assetDecimals);
+        // slither-disable-next-line unused-return
+        (uint256 assetsRaw,) = LibDecimalFloat.toFixedDecimalLossy(assetsFloat, assetDecimals);
         uint256 sharesRaw = vault.convertToShares(assetsRaw);
         return LibDecimalFloat.fromFixedDecimalLosslessPacked(sharesRaw, shareDecimals);
     }

@@ -6,8 +6,7 @@ import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {stdError} from "forge-std-1.16.1/src/StdError.sol";
 import {LibOpERC4626ConvertToAssets} from "src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {OperandV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
-import {LossyConversionFromFloat} from "rain-math-float-0.1.1/src/error/ErrDecimalFloat.sol";
+import {Float, LibDecimalFloat, LossyConversionFromFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
 
 contract LibOpERC4626ConvertToAssetsTest is Test {
@@ -189,14 +188,16 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
         assertEq(assetsRaw, 0, "any shares in a zero-rate vault must convert to 0 assets");
     }
 
-    function testRunRevertsOnLossyShareInput() external {
+    function testRunZeroOutputForSubDecimalShareInput() external {
         StackItem[] memory inputs = new StackItem[](2);
         inputs[0] =
             StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
-        // 1e-19 shares: finer than the vault's 18 decimals, cannot be converted losslessly to uint256
+        // 1e-19 shares: finer than the vault's 18 decimals, truncates to 0 raw shares
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, -19)));
-        vm.expectRevert(abi.encodeWithSelector(LossyConversionFromFloat.selector, int256(1), int256(-19)));
-        this.runExternal(inputs);
+        StackItem[] memory outputs = this.runExternal(inputs);
+        assertEq(outputs.length, 1);
+        uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        assertEq(assetsRaw, 0, "sub-decimal shares truncate to 0 raw shares, giving 0 assets");
     }
 
     function testRunRoundsDownOnPrecisionLoss() external {
