@@ -89,6 +89,21 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
         assertTrue(StackItem.unwrap(outputs[0]) != bytes32(0), "output should be non-zero for non-zero input");
     }
 
+    function testRunRoundsDownOnInexactRatio() external {
+        // assetsPerShare = 1e18 + 1: 1 raw share-unit → 1*(1e18+1)/1e18 = 1 (floor drops +1).
+        MockERC4626 oddVault = new MockERC4626(18, address(asset), 1e18 + 1);
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(oddVault)))), 0)));
+        // Float(1,-18) = 1e-18 whole shares = 1 raw share unit
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, -18)));
+
+        StackItem[] memory outputs = LibOpERC4626ConvertToAssets.run(OperandV2.wrap(0), inputs);
+
+        uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 18);
+        assertEq(assetsRaw, 1, "convertToAssets must round assets-out DOWN (floor drops remainder)");
+    }
+
     function testRunRevertsOnNonIntegerVaultFloat() external {
         StackItem[] memory inputs = new StackItem[](2);
         // vaultFloat = 0.5 — not representable as a uint160 address integer
