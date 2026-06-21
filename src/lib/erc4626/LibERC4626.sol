@@ -27,7 +27,9 @@ library LibERC4626 {
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The shares amount is passed as a Rain Float with the vault's share decimals.
-    /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
+    /// @param vaultFloat Float encoding the vault address as an integer. MUST be a whole
+    /// number in [0, 2**160) — decoded losslessly at 0 decimals then narrowed via uint160.
+    /// A value outside this range silently wraps to a different address rather than reverting.
     /// @param sharesFloat The number of shares to convert, as a Rain Float.
     /// @return The equivalent amount of underlying assets, as a Rain Float.
     function convertToAssets(Float vaultFloat, Float sharesFloat) internal view returns (Float) {
@@ -46,7 +48,9 @@ library LibERC4626 {
     /// @notice Converts underlying assets to vault shares via ERC-4626 convertToShares.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The assets amount is passed as a Rain Float with the underlying asset's decimals.
-    /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
+    /// @param vaultFloat Float encoding the vault address as an integer. MUST be a whole
+    /// number in [0, 2**160) — decoded losslessly at 0 decimals then narrowed via uint160.
+    /// A value outside this range silently wraps to a different address rather than reverting.
     /// @param assetsFloat The amount of underlying assets to convert, as a Rain Float.
     /// @return The equivalent number of vault shares, as a Rain Float.
     function convertToShares(Float vaultFloat, Float assetsFloat) internal view returns (Float) {
