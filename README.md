@@ -108,7 +108,8 @@ DEPLOYMENT_KEY=<private-key> forge script script/Deploy.sol \
 ```
 
 Or trigger the **Manual sol artifacts** GitHub Actions workflow from the Actions
-tab, selecting the target network.
+tab. Currently only the `base` network is offered as a choice in the workflow
+inputs.
 
 ## CI
 
@@ -116,7 +117,7 @@ tab, selecting the target network.
 | ------------------------ | --------------- | ------------------------------------------------------------------------ |
 | **rainix-sol**           | push            | Reusable Rainix workflow: test, static analysis, REUSE (`rainix-sol`)    |
 | **Git is clean**         | push            | Reusable `rainix-copy-artifacts`: meta, pointers, format, fails if dirty |
-| **Manual sol artifacts** | manual dispatch | Deploys to chosen network via `rainix-sol-artifacts`                     |
+| **Manual sol artifacts** | manual dispatch | Deploys to `base` via `rainix-sol-artifacts` (only `base` is offered)    |
 
 Required secrets: `PRIVATE_KEY`, `PRIVATE_KEY_DEV`, `CI_DEPLOY_RPC_URL`,
 `EXPLORER_VERIFICATION_KEY`, `CI_DEPLOY_BASE_RPC_URL`,
