@@ -118,6 +118,8 @@ tab, selecting the target network.
 | **Git is clean**         | push            | Reusable `rainix-copy-artifacts`: meta, pointers, format, fails if dirty |
 | **Manual sol artifacts** | manual dispatch | Deploys to chosen network via `rainix-sol-artifacts`                     |
 
-Required secrets: `PRIVATE_KEY`, `PRIVATE_KEY_DEV`, `CI_DEPLOY_RPC_URL`,
-`EXPLORER_VERIFICATION_KEY`, `CI_DEPLOY_BASE_RPC_URL`,
-`CI_DEPLOY_BASE_ETHERSCAN_API_KEY`.
+Required secrets (for the Manual sol artifacts deploy workflow, network=base):
+`PRIVATE_KEY`, `CI_DEPLOY_BASE_RPC_URL`, `CI_DEPLOY_BASE_ETHERSCAN_API_KEY`,
+`CI_DEPLOY_BASE_VERIFY`, `CI_DEPLOY_BASE_VERIFIER`, `CI_DEPLOY_BASE_VERIFIER_URL`.
+For other networks substitute `BASE` with the network name in uppercase.
+The CI workflows also use `CACHIX_AUTH_TOKEN` (org-level, passed via `secrets: inherit`).
