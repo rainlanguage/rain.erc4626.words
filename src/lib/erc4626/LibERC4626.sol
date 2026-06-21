@@ -1,22 +1,22 @@
 // SPDX-License-Identifier: LicenseRef-DCL-1.0
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
-pragma solidity ^0.8.25;
+pragma solidity =0.8.25;
 
 import {LibDecimalFloat, Float} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 
-/// @dev Minimal ERC-4626 interface covering only the conversion functions and
-/// metadata needed by the Rain words.
-interface IERC4626Minimal {
+/// @dev Minimal interface for any token that exposes decimal precision.
+/// Shared by both the vault (for share decimals) and the underlying asset
+/// (for asset decimals) to avoid declaring the identical decimals() selector twice.
+interface IDecimalsMinimal {
     function decimals() external view returns (uint8);
+}
+
+/// @dev Minimal ERC-4626 interface covering only the conversion functions and
+/// vault metadata needed by the Rain words.
+interface IERC4626Minimal is IDecimalsMinimal {
     function asset() external view returns (address);
     function convertToAssets(uint256 shares) external view returns (uint256 assets);
     function convertToShares(uint256 assets) external view returns (uint256 shares);
-}
-
-/// @dev Minimal ERC-20 metadata interface for reading the underlying asset's
-/// decimal precision.
-interface IERC20MetadataMinimal {
-    function decimals() external view returns (uint8);
 }
 
 /// @title LibERC4626
@@ -38,7 +38,7 @@ library LibERC4626 {
     {
         vault = IERC4626Minimal(address(uint160(LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0))));
         shareDecimals = vault.decimals();
-        assetDecimals = IERC20MetadataMinimal(vault.asset()).decimals();
+        assetDecimals = IDecimalsMinimal(vault.asset()).decimals();
     }
 
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
