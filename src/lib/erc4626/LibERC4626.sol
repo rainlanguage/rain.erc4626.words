@@ -44,26 +44,34 @@ library LibERC4626 {
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The shares amount is passed as a Rain Float with the vault's share decimals.
+    /// The returned Float is re-encoded at the underlying asset token's decimal precision,
+    /// which may differ from the share token's decimal precision.
+    /// Rounding follows ERC-4626 convertToAssets (rounds down, favors the vault).
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param sharesFloat The number of shares to convert, as a Rain Float.
-    /// @return The equivalent amount of underlying assets, as a Rain Float.
-    function convertToAssets(Float vaultFloat, Float sharesFloat) internal view returns (Float) {
+    /// @return assetsFloat The equivalent amount of underlying assets, as a Rain Float
+    ///         re-encoded at the underlying asset token's decimal precision.
+    function convertToAssets(Float vaultFloat, Float sharesFloat) internal view returns (Float assetsFloat) {
         (IERC4626Minimal vault, uint8 shareDecimals, uint8 assetDecimals) = _decode(vaultFloat);
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, shareDecimals);
         uint256 assetsRaw = vault.convertToAssets(sharesRaw);
-        return LibDecimalFloat.fromFixedDecimalLosslessPacked(assetsRaw, assetDecimals);
+        assetsFloat = LibDecimalFloat.fromFixedDecimalLosslessPacked(assetsRaw, assetDecimals);
     }
 
     /// @notice Converts underlying assets to vault shares via ERC-4626 convertToShares.
     /// The vault address is passed as a Float encoding of the address integer.
     /// The assets amount is passed as a Rain Float with the underlying asset's decimals.
+    /// The returned Float is re-encoded at the vault share token's decimal precision,
+    /// which may differ from the underlying asset's decimal precision.
+    /// Rounding follows ERC-4626 convertToShares (rounds down, favors the vault).
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @param assetsFloat The amount of underlying assets to convert, as a Rain Float.
-    /// @return The equivalent number of vault shares, as a Rain Float.
-    function convertToShares(Float vaultFloat, Float assetsFloat) internal view returns (Float) {
+    /// @return sharesFloat The equivalent number of vault shares, as a Rain Float
+    ///         re-encoded at the vault share token's decimal precision.
+    function convertToShares(Float vaultFloat, Float assetsFloat) internal view returns (Float sharesFloat) {
         (IERC4626Minimal vault, uint8 shareDecimals, uint8 assetDecimals) = _decode(vaultFloat);
         uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(assetsFloat, assetDecimals);
         uint256 sharesRaw = vault.convertToShares(assetsRaw);
-        return LibDecimalFloat.fromFixedDecimalLosslessPacked(sharesRaw, shareDecimals);
+        sharesFloat = LibDecimalFloat.fromFixedDecimalLosslessPacked(sharesRaw, shareDecimals);
     }
 }

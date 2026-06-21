@@ -9,18 +9,26 @@ uint256 constant SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES = 1;
 
 uint256 constant SUB_PARSER_WORD_PARSERS_LENGTH = 2;
 
+/// @title LibERC4626SubParser
+/// @notice Library that provides the authoring metadata for the ERC-4626 Rain
+/// sub-parser words (`erc4626-convert-to-assets` and `erc4626-convert-to-shares`).
+/// This metadata is consumed by Rain tooling to expose the words to authors.
 library LibERC4626SubParser {
+    /// @notice Returns ABI-encoded authoring metadata for the two ERC-4626 words.
+    /// The metadata describes each word's name, inputs, outputs, and semantics for
+    /// consumption by Rain tooling and documentation generators.
+    /// @return ABI-encoded array of AuthoringMetaV2 structs, one per word.
     function authoringMetaV2() internal pure returns (bytes memory) {
         AuthoringMetaV2[] memory meta = new AuthoringMetaV2[](SUB_PARSER_WORD_PARSERS_LENGTH);
 
         meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS] = AuthoringMetaV2(
             "erc4626-convert-to-assets",
-            "Converts ERC-4626 vault shares to underlying assets. Accepts 2 inputs: the vault contract address and the amount of shares as a float. Returns 1 output: the equivalent amount of underlying assets as a float. The conversion uses the vault's own convertToAssets function and respects the share and asset token decimals. Results are rounded down (floor) per the ERC-4626 convertToAssets specification, which favors the vault."
+            "Converts ERC-4626 vault shares to underlying assets. Accepts 2 inputs: the vault contract address (as a Float-encoded integer) and the amount of shares as a float (interpreted at the vault share token decimals). Returns 1 output: the equivalent amount of underlying assets as a float (re-encoded at the underlying asset token decimals). The conversion uses the vault's own convertToAssets function. Results are rounded down (floor) per the ERC-4626 convertToAssets specification, which favors the vault."
         );
 
         meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES] = AuthoringMetaV2(
             "erc4626-convert-to-shares",
-            "Converts underlying assets to ERC-4626 vault shares. Accepts 2 inputs: the vault contract address and the amount of underlying assets as a float. Returns 1 output: the equivalent number of vault shares as a float. The conversion uses the vault's own convertToShares function and respects the asset and share token decimals. Results are rounded down (floor) per the ERC-4626 convertToShares specification, which favors the vault."
+            "Converts underlying assets to ERC-4626 vault shares. Accepts 2 inputs: the vault contract address (as a Float-encoded integer) and the amount of underlying assets as a float (interpreted at the underlying asset token decimals). Returns 1 output: the equivalent number of vault shares as a float (re-encoded at the vault share token decimals). The conversion uses the vault's own convertToShares function. Results are rounded down (floor) per the ERC-4626 convertToShares specification, which favors the vault."
         );
 
         return abi.encode(meta);
