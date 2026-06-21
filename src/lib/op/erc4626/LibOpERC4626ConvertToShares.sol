@@ -10,8 +10,9 @@ library LibOpERC4626ConvertToShares {
     /// Extern integrity for erc4626-convert-to-shares.
     /// Always requires 2 inputs (vault address, assets) and produces 1 output (shares).
     /// The OperandV2 parameter is unused; this word takes no operand-encoded configuration.
-    /// The declared-inputs and declared-outputs counts are ignored; the fixed 2-in/1-out
-    /// requirement is enforced here, not by the caller.
+    /// The declared-inputs and declared-outputs parameters are intentionally ignored; arity
+    /// is fixed at 2-in/1-out and is enforced by the parser comparing these return values
+    /// against the declared counts in the source expression.
     /// @return The number of inputs required: 2 (vault address as Float, assets as Float).
     /// @return The number of outputs produced: 1 (shares as Float).
     function integrity(OperandV2, uint256, uint256) internal pure returns (uint256, uint256) {
