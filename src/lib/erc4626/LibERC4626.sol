@@ -19,14 +19,26 @@ interface IERC20MetadataMinimal {
     function decimals() external view returns (uint8);
 }
 
+/// @dev Vault-address Float decoded to a value that exceeds the address space.
+error InvalidVaultAddress(Float vaultFloat);
+
+/// @dev Token reported more decimal places than the protocol maximum.
+error UnsupportedDecimals(address token, uint8 decimals);
+
 /// @title LibERC4626
 /// @notice Core library for interacting with ERC-4626 tokenised vaults on-chain.
 /// Handles conversion between the float representation used by the Rain interpreter
 /// and the fixed-point uint256 values expected by ERC-4626 contracts.
 library LibERC4626 {
+    /// @dev Maximum token decimal places accepted. Values above this would cause
+    /// toFixedDecimalLossless to overflow or produce nonsensical scaling.
+    uint8 internal constant MAX_DECIMALS = 36;
+
     /// Decodes a vault Float into its address and both decimal scales.
     /// Reads vault.decimals() then vault.asset() then assetToken.decimals(),
     /// giving both conversion functions a single, symmetric read path.
+    /// Reverts if the vault address Float exceeds the address space or if either
+    /// token reports more decimals than MAX_DECIMALS.
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @return vault The ERC-4626 vault contract.
     /// @return shareDecimals The decimal precision of the vault share token.
@@ -36,9 +48,14 @@ library LibERC4626 {
         view
         returns (IERC4626Minimal vault, uint8 shareDecimals, uint8 assetDecimals)
     {
-        vault = IERC4626Minimal(address(uint160(LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0))));
+        uint256 vaultRaw = LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0);
+        if (vaultRaw > type(uint160).max) revert InvalidVaultAddress(vaultFloat);
+        vault = IERC4626Minimal(address(uint160(vaultRaw)));
         shareDecimals = vault.decimals();
-        assetDecimals = IERC20MetadataMinimal(vault.asset()).decimals();
+        if (shareDecimals > MAX_DECIMALS) revert UnsupportedDecimals(address(vault), shareDecimals);
+        address assetToken = vault.asset();
+        assetDecimals = IERC20MetadataMinimal(assetToken).decimals();
+        if (assetDecimals > MAX_DECIMALS) revert UnsupportedDecimals(assetToken, assetDecimals);
     }
 
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
