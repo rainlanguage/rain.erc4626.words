@@ -22,6 +22,10 @@ abstract contract ERC4626Extern is BaseRainlangExtern {
         return INTEGRITY_FUNCTION_POINTERS;
     }
 
+    /// @notice Builds the packed bytes of opcode run() function pointers used
+    /// by the extern dispatch table. Each 16-bit slot maps an opcode index to
+    /// the corresponding library run() function pointer.
+    /// @return Packed bytes of 16-bit run() function pointers, one per opcode.
     function buildOpcodeFunctionPointers() external pure returns (bytes memory) {
         function(OperandV2, StackItem[] memory) internal view returns (StackItem[] memory)[] memory fs = new function(OperandV2, StackItem[] memory)
         internal
@@ -36,6 +40,10 @@ abstract contract ERC4626Extern is BaseRainlangExtern {
         return LibConvert.unsafeTo16BitBytes(pointers);
     }
 
+    /// @notice Builds the packed bytes of integrity function pointers used by
+    /// the extern for parse-time stack arity checking. Each 16-bit slot maps an
+    /// opcode index to the corresponding library integrity() function pointer.
+    /// @return Packed bytes of 16-bit integrity() function pointers, one per opcode.
     function buildIntegrityFunctionPointers() external pure returns (bytes memory) {
         function(OperandV2, uint256, uint256) internal pure returns (uint256, uint256)[] memory fs = new function(OperandV2, uint256, uint256)
         internal
