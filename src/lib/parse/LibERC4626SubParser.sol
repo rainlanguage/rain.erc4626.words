@@ -9,7 +9,15 @@ uint256 constant SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES = 1;
 
 uint256 constant SUB_PARSER_WORD_PARSERS_LENGTH = 2;
 
+/// @title LibERC4626SubParser
+/// @notice Library that provides the authoring metadata for the ERC-4626 Rain
+/// sub-parser words (`erc4626-convert-to-assets` and `erc4626-convert-to-shares`).
+/// This metadata is consumed by Rain tooling to expose the words to authors.
 library LibERC4626SubParser {
+    /// @notice Returns ABI-encoded authoring metadata for the two ERC-4626 words.
+    /// The metadata describes each word's name, inputs, outputs, and semantics for
+    /// consumption by Rain tooling and documentation generators.
+    /// @return ABI-encoded array of AuthoringMetaV2 structs, one per word.
     function authoringMetaV2() internal pure returns (bytes memory) {
         AuthoringMetaV2[] memory meta = new AuthoringMetaV2[](SUB_PARSER_WORD_PARSERS_LENGTH);
 
