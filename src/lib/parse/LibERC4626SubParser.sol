@@ -2,14 +2,21 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity ^0.8.25;
 
-import {AuthoringMetaV2} from "rain-interpreter-interface-0.1.0/src/interface/deprecated/v1/IParserV1.sol";
+import {AuthoringMetaV2} from "rain-interpreter-interface-0.1.0/src/interface/ISubParserV4.sol";
 
 uint256 constant SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS = 0;
 uint256 constant SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES = 1;
 
 uint256 constant SUB_PARSER_WORD_PARSERS_LENGTH = 2;
 
+/// @title LibERC4626SubParser
+/// @notice Authoring metadata and sub-parser word constants for the two ERC-4626
+/// conversion words: `erc4626-convert-to-assets` and `erc4626-convert-to-shares`.
 library LibERC4626SubParser {
+    /// @notice Returns the ABI-encoded authoring metadata array for the two
+    /// ERC-4626 words. Used by build scripts to generate the CBOR meta file and
+    /// by tests to verify word names and descriptions.
+    /// @return ABI-encoded `AuthoringMetaV2[]` containing one entry per word.
     function authoringMetaV2() internal pure returns (bytes memory) {
         AuthoringMetaV2[] memory meta = new AuthoringMetaV2[](SUB_PARSER_WORD_PARSERS_LENGTH);
 
