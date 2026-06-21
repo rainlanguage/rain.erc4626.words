@@ -11,6 +11,7 @@ import {IInterpreterExternV4} from "rain-interpreter-interface-0.1.0/src/interfa
 import {ISubParserV4} from "rain-interpreter-interface-0.1.0/src/interface/ISubParserV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
+import {VaultFloat} from "test/utils/VaultFloat.sol";
 import {IDescribedByMetaV1} from "rain-metadata-0.1.0/src/interface/IDescribedByMetaV1.sol";
 import {IIntegrityToolingV1} from "rain-sol-codegen-0.1.0/src/interface/IIntegrityToolingV1.sol";
 import {IOpcodeToolingV1} from "rain-sol-codegen-0.1.0/src/interface/IOpcodeToolingV1.sol";
@@ -31,8 +32,7 @@ contract ERC4626WordsConversionsTest is Test {
 
     function testConvertToAssetsDispatch() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[0] = VaultFloat.packStackItem(address(vault));
         // 1.0 share
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
 
@@ -47,8 +47,7 @@ contract ERC4626WordsConversionsTest is Test {
 
     function testConvertToSharesDispatch() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        inputs[0] = VaultFloat.packStackItem(address(vault));
         // 1.0 asset
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
 
@@ -96,7 +95,7 @@ contract ERC4626WordsConversionsTest is Test {
     }
 
     function testConvertToAssetsAndSharesRoundTrip() external view {
-        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
+        Float vaultFloat = VaultFloat.pack(address(vault));
         // Start with 3.5 shares
         Float sharesIn = LibDecimalFloat.packLossless(35, -1);
 
