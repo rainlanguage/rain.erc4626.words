@@ -7,7 +7,7 @@ import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
 import {
     OPCODE_ERC4626_CONVERT_TO_ASSETS,
     OPCODE_ERC4626_CONVERT_TO_SHARES,
-    OPCODE_FUNCTION_POINTERS_LENGTH
+    ERC4626_WORD_COUNT
 } from "src/abstract/ERC4626Extern.sol";
 import {ExternDispatchV2, StackItem} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterExternV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
@@ -105,7 +105,7 @@ contract ERC4626WordsExternTest is Test {
     /// Revisit this assertion if the libs ever diverge in their integrity signatures.
     function testIntegrityBothOpcodesSameCompiledFunction() external view {
         bytes memory rebuilt = words.buildIntegrityFunctionPointers();
-        assertEq(rebuilt.length, OPCODE_FUNCTION_POINTERS_LENGTH * 2, "two 2-byte integrity slots");
+        assertEq(rebuilt.length, ERC4626_WORD_COUNT * 2, "two 2-byte integrity slots");
         assertEq(rebuilt[0], rebuilt[2], "integrity slot 0 high byte must equal slot 1 high byte");
         assertEq(rebuilt[1], rebuilt[3], "integrity slot 0 low byte must equal slot 1 low byte");
     }
@@ -113,9 +113,7 @@ contract ERC4626WordsExternTest is Test {
     /// @dev externIntegrity reverts for an out-of-range opcode.
     function testExternIntegrityOpcodeOutOfRangeReverts() external {
         vm.expectRevert(
-            abi.encodeWithSelector(
-                ExternOpcodeOutOfRange.selector, uint256(999), uint256(OPCODE_FUNCTION_POINTERS_LENGTH)
-            )
+            abi.encodeWithSelector(ExternOpcodeOutOfRange.selector, uint256(999), uint256(ERC4626_WORD_COUNT))
         );
         words.externIntegrity(makeDispatch(999), 0, 0);
     }
