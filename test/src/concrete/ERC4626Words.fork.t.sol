@@ -6,6 +6,7 @@ import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {
     FORK_RPC_URL_BASE,
     FORK_BLOCK_BASE,
+    FORK_VAULT_COUNT,
     WT_NVDA,
     WT_AMZN,
     WT_TSLA,
@@ -153,5 +154,48 @@ contract ERC4626WordsForkTest is Test {
 
     function testSGOV() external view {
         checkVault(WT_SGOV, "SGOV");
+    }
+
+    /// @dev Assert the vault table covers every WT_* constant in LibFork.
+    /// Adding a new WT_* address without bumping FORK_VAULT_COUNT fails this test,
+    /// so a new address cannot ship without a corresponding checkVault call.
+    function testForkVaultEnumeration() external view {
+        address[FORK_VAULT_COUNT] memory vaults = [
+            WT_NVDA,
+            WT_AMZN,
+            WT_TSLA,
+            WT_MSTR,
+            WT_IAU,
+            WT_COIN,
+            WT_SPYM,
+            WT_SIVR,
+            WT_CRCL,
+            WT_BMNR,
+            WT_PPLT,
+            WT_QQQM,
+            WT_VWO,
+            WT_ARKK,
+            WT_SGOV
+        ];
+        string[FORK_VAULT_COUNT] memory labels = [
+            "NVDA",
+            "AMZN",
+            "TSLA",
+            "MSTR",
+            "IAU",
+            "COIN",
+            "SPYM",
+            "SIVR",
+            "CRCL",
+            "BMNR",
+            "PPLT",
+            "QQQM",
+            "VWO",
+            "ARKK",
+            "SGOV"
+        ];
+        for (uint256 i = 0; i < FORK_VAULT_COUNT; i++) {
+            checkVault(vaults[i], labels[i]);
+        }
     }
 }
