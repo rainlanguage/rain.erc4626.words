@@ -158,6 +158,88 @@ contract LibERC4626Test is Test {
         this._callConvertToShares(vaultFloat, LibDecimalFloat.packLossless(1, 0));
     }
 
+    function testConvertToAssetsRoundsDownWithFractionalShares() external {
+        // assetsPerShare=1 raw unit: 1 whole share (1e18 raw) gives 1 raw asset.
+        // 0.5 shares (5e17 raw) → 5e17 * 1 / 1e18 = 0 (Solidity floor division).
+        MockERC4626 v = new MockERC4626(18, address(asset), 1);
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(v)))), 0);
+        Float sharesFloat = LibDecimalFloat.packLossless(5, -1);
+        Float assetsFloat = LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+        uint256 assetsRaw = LibDecimalFloat.toFixedDecimalLossless(assetsFloat, 18);
+        assertEq(assetsRaw, 0, "fractional shares must round DOWN to 0 assets, never up");
+    }
+
+    function testConvertToSharesRoundsDownWithNonDivisibleRate() external {
+        // 1 share = 3 assets: 1 asset → assets*1e18/assetsPerShare = 1e18*1e18/3e18 = 333333333333333333 (floor).
+        MockERC4626 v3 = new MockERC4626(18, address(asset), 3e18);
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(v3)))), 0);
+        Float assetsFloat = LibDecimalFloat.packLossless(1, 0);
+        Float sharesFloat = LibERC4626.convertToShares(vaultFloat, assetsFloat);
+        uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
+        assertEq(sharesRaw, 333333333333333333, "convertToShares must round DOWN (favor protocol, not caller)");
+        assertTrue(sharesRaw < 333333333333333334, "must not round up toward the interactive caller");
+    }
+
+    function _convertToAssets(Float vaultFloat, Float sharesFloat) external view returns (Float) {
+        return LibERC4626.convertToAssets(vaultFloat, sharesFloat);
+    }
+
+    function _convertToShares(Float vaultFloat, Float assetsFloat) external view returns (Float) {
+        return LibERC4626.convertToShares(vaultFloat, assetsFloat);
+    }
+
+    /// @notice For any whole-number shares input and any positive exchange rate,
+    /// convertToAssets must produce the same value as the independent integer floor.
+    /// Reverts (when the Float cannot represent the result) are skipped; the
+    /// rounding assertion applies only to the non-reverting subset.
+    function testFuzzConvertToAssetsFloorRounding(uint32 sharesWhole, uint64 rate) external {
+        rate = uint64(bound(rate, 1, type(uint64).max));
+        MockERC4626 v = new MockERC4626(18, address(asset), uint256(rate));
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(v)))), 0);
+        Float sharesFloat = LibDecimalFloat.packLossless(int256(uint256(sharesWhole)), 0);
+
+        uint256 sharesRaw = uint256(sharesWhole) * 1e18;
+        // Skip inputs where the vault multiply overflows uint256.
+        bool overflow = sharesRaw != 0 && uint256(rate) > type(uint256).max / sharesRaw;
+        if (overflow) return;
+        uint256 expected = sharesRaw * uint256(rate) / 1e18;
+
+        bool success;
+        uint256 actual;
+        try this._convertToAssets(vaultFloat, sharesFloat) returns (Float f) {
+            success = true;
+            actual = LibDecimalFloat.toFixedDecimalLossless(f, 18);
+        } catch {}
+        if (success) {
+            assertEq(actual, expected, "convertToAssets floor: must equal independent computation");
+        }
+    }
+
+    /// @notice For any whole-number assets input and any positive exchange rate,
+    /// convertToShares must produce the same value as the independent integer floor.
+    function testFuzzConvertToSharesFloorRounding(uint32 assetsWhole, uint64 rate) external {
+        rate = uint64(bound(rate, 1, type(uint64).max));
+        MockERC4626 v = new MockERC4626(18, address(asset), uint256(rate));
+        Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(v)))), 0);
+        Float assetsFloat = LibDecimalFloat.packLossless(int256(uint256(assetsWhole)), 0);
+
+        uint256 assetsRaw = uint256(assetsWhole) * 1e18;
+        // Skip inputs where the vault multiply overflows uint256.
+        bool overflow = assetsRaw != 0 && 1e18 > type(uint256).max / assetsRaw;
+        if (overflow) return;
+        uint256 expected = assetsRaw * 1e18 / uint256(rate);
+
+        bool success;
+        uint256 actual;
+        try this._convertToShares(vaultFloat, assetsFloat) returns (Float f) {
+            success = true;
+            actual = LibDecimalFloat.toFixedDecimalLossless(f, 18);
+        } catch {}
+        if (success) {
+            assertEq(actual, expected, "convertToShares floor: must equal independent computation");
+        }
+    }
+
     function testConvertToAssetsZeroShares() external view {
         Float vaultFloat = LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0);
         Float zeroShares = LibDecimalFloat.packLossless(0, 0);
