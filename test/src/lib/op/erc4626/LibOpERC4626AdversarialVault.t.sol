@@ -10,6 +10,7 @@ import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFl
 import {LossyConversionToFloat} from "rain-math-float-0.1.1/src/error/ErrDecimalFloat.sol";
 import {MockERC20} from "test/utils/MockERC20.sol";
 import {MaliciousERC4626} from "test/utils/MaliciousERC4626.sol";
+import {VaultFloat} from "test/utils/VaultFloat.sol";
 
 /// @notice Tests that an adversarial vault returning type(uint256).max causes a
 /// revert with LossyConversionToFloat rather than silent data corruption.
@@ -46,9 +47,8 @@ contract LibOpERC4626AdversarialVaultTest is Test {
     /// must revert with LossyConversionToFloat, not silently corrupt the result.
     function testAdversarialConvertToAssetsReverts() external {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(malVault)))), 0)));
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        inputs[0] = VaultFloat.packStackItem(address(malVault));
+        inputs[1] = VaultFloat.floatStackItem(1, 0);
 
         // type(uint256).max / 10 fits in int256; exponent shifts by +1 because the
         // value exceeded int256 max and was divided by 10 inside fromFixedDecimalLossy.
@@ -62,9 +62,8 @@ contract LibOpERC4626AdversarialVaultTest is Test {
     /// must revert with LossyConversionToFloat, not silently corrupt the result.
     function testAdversarialConvertToSharesReverts() external {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(malVault)))), 0)));
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        inputs[0] = VaultFloat.packStackItem(address(malVault));
+        inputs[1] = VaultFloat.floatStackItem(1, 0);
 
         vm.expectRevert(
             abi.encodeWithSelector(LossyConversionToFloat.selector, int256(type(uint256).max / 10), int256(-17))

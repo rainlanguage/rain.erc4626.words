@@ -34,7 +34,7 @@ contract ERC4626WordsConversionsTest is Test {
         StackItem[] memory inputs = new StackItem[](2);
         inputs[0] = VaultFloat.packStackItem(address(vault));
         // 1.0 share
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        inputs[1] = VaultFloat.floatStackItem(1, 0);
 
         StackItem[] memory outputs = LibOpERC4626ConvertToAssets.run(OperandV2.wrap(0), inputs);
 
@@ -49,7 +49,7 @@ contract ERC4626WordsConversionsTest is Test {
         StackItem[] memory inputs = new StackItem[](2);
         inputs[0] = VaultFloat.packStackItem(address(vault));
         // 1.0 asset
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        inputs[1] = VaultFloat.floatStackItem(1, 0);
 
         StackItem[] memory outputs = LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
 

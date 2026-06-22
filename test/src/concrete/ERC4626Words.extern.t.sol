@@ -13,6 +13,7 @@ import {ExternDispatchV2, StackItem} from "rain-interpreter-interface-0.1.0/src/
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {ExternOpcodeOutOfRange} from "rainlang-0.1.2/src/error/ErrExtern.sol";
 import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
+import {VaultFloat} from "test/utils/VaultFloat.sol";
 
 /// @notice Tests that ERC4626Words.extern() dispatches through the committed
 /// OPCODE_FUNCTION_POINTERS table and that externIntegrity() correctly reports
@@ -35,16 +36,11 @@ contract ERC4626WordsExternTest is Test {
         return ExternDispatchV2.wrap(bytes32(opcode << 16));
     }
 
-    function vaultItem() internal view returns (StackItem) {
-        // forge-lint: disable-next-line(unsafe-typecast)
-        return StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
-    }
-
     /// @dev Opcode 0 must route to convertToAssets: 1 share (Float 1.0) → 2 USDC (6 decimals).
     function testExternConvertToAssetsRouting() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = vaultItem();
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        inputs[0] = VaultFloat.packStackItem(address(vault));
+        inputs[1] = VaultFloat.floatStackItem(1, 0);
 
         StackItem[] memory outputs = words.extern(makeDispatch(OPCODE_ERC4626_CONVERT_TO_ASSETS), inputs);
 
@@ -56,8 +52,8 @@ contract ERC4626WordsExternTest is Test {
     /// @dev Opcode 1 must route to convertToShares: 2 USDC (Float 2.0) → 1 share (18 decimals).
     function testExternConvertToSharesRouting() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = vaultItem();
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(2, 0)));
+        inputs[0] = VaultFloat.packStackItem(address(vault));
+        inputs[1] = VaultFloat.floatStackItem(2, 0);
 
         StackItem[] memory outputs = words.extern(makeDispatch(OPCODE_ERC4626_CONVERT_TO_SHARES), inputs);
 
@@ -73,8 +69,8 @@ contract ERC4626WordsExternTest is Test {
     /// A swap in OPCODE_FUNCTION_POINTERS would produce the wrong value.
     function testExternOpcodeRoutingIsDistinct() external view {
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] = vaultItem();
-        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(1, 0)));
+        inputs[0] = VaultFloat.packStackItem(address(vault));
+        inputs[1] = VaultFloat.floatStackItem(1, 0);
 
         StackItem[] memory out0 = words.extern(makeDispatch(OPCODE_ERC4626_CONVERT_TO_ASSETS), inputs);
         StackItem[] memory out1 = words.extern(makeDispatch(OPCODE_ERC4626_CONVERT_TO_SHARES), inputs);

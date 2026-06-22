@@ -23,4 +23,12 @@ library VaultFloat {
     function packStackItem(address vault) internal pure returns (StackItem) {
         return StackItem.wrap(Float.unwrap(pack(vault)));
     }
+
+    /// Pack a (coefficient, exponent) Rain Float as a StackItem for use in extern inputs arrays.
+    /// @param coefficient The significand of the Float.
+    /// @param exponent The base-10 exponent of the Float.
+    /// @return The StackItem wrapping the packed Float.
+    function floatStackItem(int256 coefficient, int256 exponent) internal pure returns (StackItem) {
+        return StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(coefficient, exponent)));
+    }
 }
