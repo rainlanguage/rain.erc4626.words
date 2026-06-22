@@ -54,6 +54,10 @@ contract ERC4626WordsPointersTest is Test {
         );
     }
 
+    function testLiteralParserFunctionPointersEmpty() external view {
+        assertEq(words.buildLiteralParserFunctionPointers(), bytes(""), "literal parser pointers must be empty");
+    }
+
     function testOpcodeFunctionPointersLengthIsNonZero() external pure {
         assertTrue(OPCODE_FUNCTION_POINTERS.length > 0, "OPCODE_FUNCTION_POINTERS must not be empty");
     }
