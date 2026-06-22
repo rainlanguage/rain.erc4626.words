@@ -172,6 +172,20 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
     }
 
+    function testRunRevertsWithEmptyInputs() external {
+        StackItem[] memory inputs = new StackItem[](0);
+        vm.expectRevert(stdError.indexOOBError);
+        this.runExternal(inputs);
+    }
+
+    function testRunRevertsWithOneInput() external {
+        StackItem[] memory inputs = new StackItem[](1);
+        inputs[0] =
+            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault)))), 0)));
+        vm.expectRevert(stdError.indexOOBError);
+        this.runExternal(inputs);
+    }
+
     function testRunZeroSupplyVaultReverts() external {
         MockERC4626 emptyVault = new MockERC4626(18, address(asset), 0);
         StackItem[] memory inputs = new StackItem[](2);
