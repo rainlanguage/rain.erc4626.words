@@ -5,6 +5,7 @@ pragma solidity =0.8.25;
 import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
 import {
+    BYTECODE_HASH,
     OPCODE_FUNCTION_POINTERS,
     INTEGRITY_FUNCTION_POINTERS,
     SUB_PARSER_WORD_PARSERS,
@@ -19,6 +20,10 @@ contract ERC4626WordsPointersTest is Test {
 
     function setUp() external {
         words = new ERC4626Words();
+    }
+
+    function testBytecodeHashMatchesDeployedCode() external view {
+        assertEq(address(words).codehash, BYTECODE_HASH, "BYTECODE_HASH is stale");
     }
 
     function testOpcodeFunctionPointersMatchCommitted() external view {
