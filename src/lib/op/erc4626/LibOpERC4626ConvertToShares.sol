@@ -11,6 +11,8 @@ library LibOpERC4626ConvertToShares {
     /// Always requires 2 inputs (vault address, assets) and produces 1 output (shares).
     /// The declared-inputs and declared-outputs parameters are unused; arity is fixed and
     /// the parser enforces the returned (2, 1) against the source declaration at parse time.
+    /// @return The number of inputs required (2: vault address as Float, assets as Float).
+    /// @return The number of outputs produced (1: shares as Float).
     function integrity(OperandV2, uint256, uint256) internal pure returns (uint256, uint256) {
         return (2, 1);
     }
