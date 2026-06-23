@@ -213,4 +213,22 @@ contract LibERC4626Test is Test {
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
         assertEq(sharesRaw, 1e27, "1e9 assets must yield 1e9 shares (1e27 raw) in a 1:1 vault");
     }
+
+    /// A vault Float with a fractional mantissa (1.5 = packLossless(15, -1)) cannot be
+    /// losslessly decoded to an integer address; toFixedDecimalLossless reverts before
+    /// any vault call is made.
+    function testConvertToAssetsRevertsOnNonIntegerVaultFloat() external {
+        Float vaultFloat = LibDecimalFloat.packLossless(15, -1);
+        Float sharesFloat = LibDecimalFloat.packLossless(1, 0);
+        vm.expectRevert();
+        this._convertToAssets(vaultFloat, sharesFloat);
+    }
+
+    /// Same non-integer revert guard applies on the convertToShares path.
+    function testConvertToSharesRevertsOnNonIntegerVaultFloat() external {
+        Float vaultFloat = LibDecimalFloat.packLossless(15, -1);
+        Float assetsFloat = LibDecimalFloat.packLossless(1, 0);
+        vm.expectRevert();
+        this._convertToShares(vaultFloat, assetsFloat);
+    }
 }
