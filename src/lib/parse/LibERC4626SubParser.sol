@@ -15,12 +15,12 @@ library LibERC4626SubParser {
 
         meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS] = AuthoringMetaV2(
             "erc4626-convert-to-assets",
-            "Converts ERC-4626 vault shares to underlying assets. Accepts 2 inputs: the vault contract address and the amount of shares as a float. Returns 1 output: the equivalent amount of underlying assets as a float. The conversion uses the vault's own convertToAssets function and respects the share and asset token decimals. Results are rounded down (floor) per the ERC-4626 convertToAssets specification, which favors the vault."
+            "Converts ERC-4626 vault shares to underlying assets. Accepts 2 inputs: the vault contract address (as a Float-encoded integer) and the amount of shares as a float. Returns 1 output: the floor-rounded amount of underlying assets as a float. The conversion uses the vault's own convertToAssets function and respects the share and asset token decimals. Results are rounded down (floor) per the ERC-4626 convertToAssets specification, which favors the vault."
         );
 
         meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES] = AuthoringMetaV2(
             "erc4626-convert-to-shares",
-            "Converts underlying assets to ERC-4626 vault shares. Accepts 2 inputs: the vault contract address and the amount of underlying assets as a float. Returns 1 output: the equivalent number of vault shares as a float. The conversion uses the vault's own convertToShares function and respects the asset and share token decimals. Results are rounded down (floor) per the ERC-4626 convertToShares specification, which favors the vault."
+            "Converts underlying assets to ERC-4626 vault shares. Accepts 2 inputs: the vault contract address (as a Float-encoded integer) and the amount of underlying assets as a float. Returns 1 output: the floor-rounded number of vault shares as a float. The conversion uses the vault's own convertToShares function and respects the asset and share token decimals. Results are rounded down (floor) per the ERC-4626 convertToShares specification, which favors the vault."
         );
 
         return abi.encode(meta);
