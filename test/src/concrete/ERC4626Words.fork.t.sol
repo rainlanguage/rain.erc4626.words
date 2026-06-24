@@ -95,63 +95,41 @@ contract ERC4626WordsForkTest is Test {
         assertEq(actualShares, expectedShares, string.concat(label, ": assetsToShares mismatch"));
     }
 
-    function testNVDA() external view {
-        checkVault(WT_NVDA, "NVDA");
-    }
-
-    function testAMZN() external view {
-        checkVault(WT_AMZN, "AMZN");
-    }
-
-    function testTSLA() external view {
-        checkVault(WT_TSLA, "TSLA");
-    }
-
-    function testMSTR() external view {
-        checkVault(WT_MSTR, "MSTR");
-    }
-
-    function testIAU() external view {
-        checkVault(WT_IAU, "IAU");
-    }
-
-    function testCOIN() external view {
-        checkVault(WT_COIN, "COIN");
-    }
-
-    function testSPYM() external view {
-        checkVault(WT_SPYM, "SPYM");
-    }
-
-    function testSIVR() external view {
-        checkVault(WT_SIVR, "SIVR");
-    }
-
-    function testCRCL() external view {
-        checkVault(WT_CRCL, "CRCL");
-    }
-
-    function testBMNR() external view {
-        checkVault(WT_BMNR, "BMNR");
-    }
-
-    function testPPLT() external view {
-        checkVault(WT_PPLT, "PPLT");
-    }
-
-    function testQQQM() external view {
-        checkVault(WT_QQQM, "QQQM");
-    }
-
-    function testVWO() external view {
-        checkVault(WT_VWO, "VWO");
-    }
-
-    function testARKK() external view {
-        checkVault(WT_ARKK, "ARKK");
-    }
-
-    function testSGOV() external view {
-        checkVault(WT_SGOV, "SGOV");
+    function testForkVaults() external view {
+        address[] memory addrs = new address[](15);
+        string[] memory labels = new string[](15);
+        addrs[0] = WT_NVDA;
+        labels[0] = "NVDA";
+        addrs[1] = WT_AMZN;
+        labels[1] = "AMZN";
+        addrs[2] = WT_TSLA;
+        labels[2] = "TSLA";
+        addrs[3] = WT_MSTR;
+        labels[3] = "MSTR";
+        addrs[4] = WT_IAU;
+        labels[4] = "IAU";
+        addrs[5] = WT_COIN;
+        labels[5] = "COIN";
+        addrs[6] = WT_SPYM;
+        labels[6] = "SPYM";
+        addrs[7] = WT_SIVR;
+        labels[7] = "SIVR";
+        addrs[8] = WT_CRCL;
+        labels[8] = "CRCL";
+        addrs[9] = WT_BMNR;
+        labels[9] = "BMNR";
+        addrs[10] = WT_PPLT;
+        labels[10] = "PPLT";
+        addrs[11] = WT_QQQM;
+        labels[11] = "QQQM";
+        addrs[12] = WT_VWO;
+        labels[12] = "VWO";
+        addrs[13] = WT_ARKK;
+        labels[13] = "ARKK";
+        addrs[14] = WT_SGOV;
+        labels[14] = "SGOV";
+        for (uint256 i = 0; i < addrs.length; i++) {
+            checkVault(addrs[i], labels[i]);
+        }
     }
 }
