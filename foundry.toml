@@ -17,7 +17,7 @@ bytecode_hash = "none"
 cbor_metadata = false
 
 [rpc_endpoints]
-base = "${FORK_RPC_URL_BASE:-https://base.gateway.tenderly.co}"
+base = "https://base.gateway.tenderly.co"
 
 [dependencies]
 forge-std = "1.16.1"
