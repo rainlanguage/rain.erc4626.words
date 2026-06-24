@@ -6,7 +6,8 @@ import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {
     OPCODE_ERC4626_CONVERT_TO_ASSETS,
     OPCODE_ERC4626_CONVERT_TO_SHARES,
-    OPCODE_FUNCTION_POINTERS_LENGTH
+    OPCODE_FUNCTION_POINTERS_LENGTH,
+    INTEGRITY_FUNCTION_POINTERS_LENGTH
 } from "src/abstract/ERC4626Extern.sol";
 import {
     SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS,
@@ -66,8 +67,36 @@ contract ERC4626WordsIndexAlignmentTest is Test {
     function testIntegrityFunctionPointersByteLengthMatchesCount() external pure {
         assertEq(
             INTEGRITY_FUNCTION_POINTERS.length,
-            OPCODE_FUNCTION_POINTERS_LENGTH * 2,
+            INTEGRITY_FUNCTION_POINTERS_LENGTH * 2,
             "INTEGRITY_FUNCTION_POINTERS must be exactly 2 bytes per opcode"
+        );
+    }
+
+    function testOpcodeTableSlotsNonZero() external pure {
+        bytes memory ptrs = OPCODE_FUNCTION_POINTERS;
+        uint256 assetsIdx = OPCODE_ERC4626_CONVERT_TO_ASSETS;
+        uint256 sharesIdx = OPCODE_ERC4626_CONVERT_TO_SHARES;
+        assertTrue(
+            ptrs[assetsIdx * 2] != 0 || ptrs[assetsIdx * 2 + 1] != 0,
+            "convert-to-assets opcode slot must have non-zero function pointer"
+        );
+        assertTrue(
+            ptrs[sharesIdx * 2] != 0 || ptrs[sharesIdx * 2 + 1] != 0,
+            "convert-to-shares opcode slot must have non-zero function pointer"
+        );
+    }
+
+    function testIntegrityTableSlotsNonZero() external pure {
+        bytes memory ptrs = INTEGRITY_FUNCTION_POINTERS;
+        uint256 assetsIdx = OPCODE_ERC4626_CONVERT_TO_ASSETS;
+        uint256 sharesIdx = OPCODE_ERC4626_CONVERT_TO_SHARES;
+        assertTrue(
+            ptrs[assetsIdx * 2] != 0 || ptrs[assetsIdx * 2 + 1] != 0,
+            "convert-to-assets integrity slot must have non-zero function pointer"
+        );
+        assertTrue(
+            ptrs[sharesIdx * 2] != 0 || ptrs[sharesIdx * 2 + 1] != 0,
+            "convert-to-shares integrity slot must have non-zero function pointer"
         );
     }
 
