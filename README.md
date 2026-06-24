@@ -65,11 +65,15 @@ nix develop github:rainlanguage/rainix#sol-shell -c forge soldeer install
 
 ### Build
 
+Requires soldeer dependencies to be installed first (see above).
+
 ```sh
 forge build
 ```
 
 ### Test
+
+Requires soldeer dependencies to be installed first (see above).
 
 ```sh
 forge test
