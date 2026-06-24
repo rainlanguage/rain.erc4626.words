@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-DCL-1.0
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
-pragma solidity ^0.8.25;
+pragma solidity =0.8.25;
 
 import {BaseRainlangExtern, OperandV2, StackItem} from "rainlang-0.1.2/src/abstract/BaseRainlangExtern.sol";
 import {LibOpERC4626ConvertToAssets} from "../lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
