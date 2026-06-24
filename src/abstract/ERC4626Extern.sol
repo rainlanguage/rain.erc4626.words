@@ -13,11 +13,16 @@ uint256 constant OPCODE_ERC4626_CONVERT_TO_SHARES = 1;
 
 uint256 constant OPCODE_FUNCTION_POINTERS_LENGTH = 2;
 
+/// @dev Wires the ERC-4626 convertToAssets/convertToShares words into a
+/// Rainlang extern by providing the precomputed opcode and integrity function
+/// pointer tables from the generated constants.
 abstract contract ERC4626Extern is BaseRainlangExtern {
+    /// @inheritdoc BaseRainlangExtern
     function opcodeFunctionPointers() internal pure override returns (bytes memory) {
         return OPCODE_FUNCTION_POINTERS;
     }
 
+    /// @inheritdoc BaseRainlangExtern
     function integrityFunctionPointers() internal pure override returns (bytes memory) {
         return INTEGRITY_FUNCTION_POINTERS;
     }
