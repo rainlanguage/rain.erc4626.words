@@ -12,6 +12,7 @@ uint256 constant OPCODE_ERC4626_CONVERT_TO_ASSETS = 0;
 uint256 constant OPCODE_ERC4626_CONVERT_TO_SHARES = 1;
 
 uint256 constant OPCODE_FUNCTION_POINTERS_LENGTH = 2;
+uint256 constant INTEGRITY_FUNCTION_POINTERS_LENGTH = 2;
 
 abstract contract ERC4626Extern is BaseRainlangExtern {
     function opcodeFunctionPointers() internal pure override returns (bytes memory) {
@@ -39,7 +40,7 @@ abstract contract ERC4626Extern is BaseRainlangExtern {
     function buildIntegrityFunctionPointers() external pure returns (bytes memory) {
         function(OperandV2, uint256, uint256) internal pure returns (uint256, uint256)[] memory fs = new function(OperandV2, uint256, uint256)
         internal
-        pure returns (uint256, uint256)[](OPCODE_FUNCTION_POINTERS_LENGTH);
+        pure returns (uint256, uint256)[](INTEGRITY_FUNCTION_POINTERS_LENGTH);
         fs[OPCODE_ERC4626_CONVERT_TO_ASSETS] = LibOpERC4626ConvertToAssets.integrity;
         fs[OPCODE_ERC4626_CONVERT_TO_SHARES] = LibOpERC4626ConvertToShares.integrity;
 
