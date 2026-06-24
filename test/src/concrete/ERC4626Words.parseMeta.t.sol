@@ -3,6 +3,9 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
+import {AuthoringMetaV2} from "rain-interpreter-interface-0.1.0/src/interface/deprecated/v1/IParserV1.sol";
+import {LibGenParseMeta} from "rain-interpreter-interface-0.1.0/src/lib/codegen/LibGenParseMeta.sol";
+import {LibERC4626SubParser} from "src/lib/parse/LibERC4626SubParser.sol";
 import {PARSE_META_BUILD_DEPTH as PARSE_META_BUILD_DEPTH_SUBPARSER} from "src/abstract/ERC4626SubParser.sol";
 import {
     PARSE_META_BUILD_DEPTH as PARSE_META_BUILD_DEPTH_GENERATED,
@@ -36,5 +39,12 @@ contract ERC4626WordsParseMetaTest is Test {
         assertEq(
             uint8(PARSE_META[0]), PARSE_META_BUILD_DEPTH_GENERATED, "first byte of PARSE_META must equal build depth"
         );
+    }
+
+    function testParseMetaMatchesDynamicBuild() external pure {
+        bytes memory encodedMeta = LibERC4626SubParser.authoringMetaV2();
+        AuthoringMetaV2[] memory authoringMeta = abi.decode(encodedMeta, (AuthoringMetaV2[]));
+        bytes memory rebuilt = LibGenParseMeta.buildParseMetaV2(authoringMeta, PARSE_META_BUILD_DEPTH_GENERATED);
+        assertEq(rebuilt, PARSE_META, "PARSE_META must match dynamically rebuilt parse meta from authoringMetaV2");
     }
 }
