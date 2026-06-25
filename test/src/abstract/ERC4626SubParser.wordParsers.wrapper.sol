@@ -22,17 +22,3 @@ contract ERC4626SubParserWordParsersWrapper is ERC4626Words {
         return erc4626ConvertToSharesSubParser(constantsHeight, ioByte, operand);
     }
 }
-
-/// @dev Overrides extern() to a separate address to verify the sub-parser
-/// respects the virtual override rather than hardcoding address(this).
-contract ERC4626SubParserSplitExternWrapper is ERC4626SubParserWordParsersWrapper {
-    address private immutable _ext;
-
-    constructor(address ext) {
-        _ext = ext;
-    }
-
-    function extern() internal view override returns (address) {
-        return _ext;
-    }
-}
