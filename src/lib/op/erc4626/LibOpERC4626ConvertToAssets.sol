@@ -32,6 +32,9 @@ library LibOpERC4626ConvertToAssets {
     /// @param inputs Stack items: [0] vault address as Float (packed integer),
     /// [1] shares as Float.
     /// @return 1-element array: [assets as Float].
+    /// @dev Assembly reads at `inputs[0]` (`add(inputs, 0x20)`) and `inputs[1]`
+    /// (`add(inputs, 0x40)`) are safe: `integrity()` enforces `inputs.length == 2`
+    /// before the interpreter dispatches `run()`.
     function run(OperandV2 operand, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
         Float vaultFloat;
         Float sharesFloat;
