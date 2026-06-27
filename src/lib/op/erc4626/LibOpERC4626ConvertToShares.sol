@@ -32,6 +32,9 @@ library LibOpERC4626ConvertToShares {
     /// @param inputs Stack items: [0] vault address as Float (packed integer),
     /// [1] assets as Float.
     /// @return 1-element array: [shares as Float].
+    /// @dev Assembly reads at `inputs[0]` (`add(inputs, 0x20)`) and `inputs[1]`
+    /// (`add(inputs, 0x40)`) are safe: `integrity()` enforces `inputs.length == 2`
+    /// before the interpreter dispatches `run()`.
     function run(OperandV2 operand, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
         Float vaultFloat;
         Float assetsFloat;
