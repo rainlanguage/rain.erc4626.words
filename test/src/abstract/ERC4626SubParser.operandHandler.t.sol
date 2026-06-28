@@ -7,7 +7,7 @@ import {
 } from "rainlang-0.1.2/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
 import {UnexpectedOperand} from "rainlang-0.1.2/src/error/ErrParse.sol";
 import {Strings} from "@openzeppelin-contracts-5.6.1/utils/Strings.sol";
-import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
+import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 
 /// @notice Tests that erc4626-convert-to-assets and erc4626-convert-to-shares
 /// reject any operand value at parse time. Both words are wired to

@@ -15,8 +15,8 @@ import {LibContext} from "rain-interpreter-interface-0.1.0/src/lib/caller/LibCon
 import {SignedContextV1} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterCallerV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 import {Strings} from "@openzeppelin-contracts-5.6.1/utils/Strings.sol";
-import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
-import {MockERC4626, MockERC20} from "test/utils/MockERC4626.sol";
+import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
+import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 
 /// @notice Parse+eval tests for the ERC4626 subparser words.
 /// These tests exercise the full name → PARSE_META → opcode → extern dispatch chain,

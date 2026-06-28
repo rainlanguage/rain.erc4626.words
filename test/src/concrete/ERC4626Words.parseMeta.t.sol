@@ -3,11 +3,11 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
-import {PARSE_META_BUILD_DEPTH as PARSE_META_BUILD_DEPTH_SUBPARSER} from "src/abstract/ERC4626SubParser.sol";
+import {PARSE_META_BUILD_DEPTH as PARSE_META_BUILD_DEPTH_SUBPARSER} from "../../../src/abstract/ERC4626SubParser.sol";
 import {
     PARSE_META_BUILD_DEPTH as PARSE_META_BUILD_DEPTH_GENERATED,
     PARSE_META
-} from "src/generated/ERC4626Words.pointers.sol";
+} from "../../../src/generated/ERC4626Words.pointers.sol";
 
 /// @notice Asserts the two separately-defined PARSE_META_BUILD_DEPTH constants agree.
 /// Covers HIGH issue: PARSE_META_BUILD_DEPTH lives in two hand/generated sources

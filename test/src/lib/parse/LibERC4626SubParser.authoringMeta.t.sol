@@ -4,12 +4,12 @@ pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
 import {AuthoringMetaV2} from "rain-interpreter-interface-0.1.0/src/interface/deprecated/v1/IParserV1.sol";
-import {LibERC4626SubParser, SUB_PARSER_WORD_PARSERS_LENGTH} from "src/lib/parse/LibERC4626SubParser.sol";
+import {LibERC4626SubParser, SUB_PARSER_WORD_PARSERS_LENGTH} from "../../../../src/lib/parse/LibERC4626SubParser.sol";
 import {
     SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS,
     SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES
-} from "src/lib/parse/LibERC4626SubParser.sol";
-import {DESCRIBED_BY_META_HASH} from "src/generated/ERC4626Words.pointers.sol";
+} from "../../../../src/lib/parse/LibERC4626SubParser.sol";
+import {DESCRIBED_BY_META_HASH} from "../../../../src/generated/ERC4626Words.pointers.sol";
 
 /// @notice Tests that authoringMetaV2() is well-formed and consistent with committed artifacts.
 contract LibERC4626SubParserAuthoringMetaTest is Test {

@@ -3,8 +3,8 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
-import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
-import {DESCRIBED_BY_META_HASH} from "src/generated/ERC4626Words.pointers.sol";
+import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
+import {DESCRIBED_BY_META_HASH} from "../../../src/generated/ERC4626Words.pointers.sol";
 import {IDescribedByMetaV1} from "rain-metadata-0.1.0/src/interface/IDescribedByMetaV1.sol";
 import {IInterpreterExternV4} from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterExternV4.sol";
 import {IERC165} from "@openzeppelin-contracts-5.6.1/utils/introspection/IERC165.sol";

@@ -7,18 +7,18 @@ import {
     OPCODE_ERC4626_CONVERT_TO_ASSETS,
     OPCODE_ERC4626_CONVERT_TO_SHARES,
     OPCODE_FUNCTION_POINTERS_LENGTH
-} from "src/abstract/ERC4626Extern.sol";
+} from "../../../src/abstract/ERC4626Extern.sol";
 import {
     SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS,
     SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES,
     SUB_PARSER_WORD_PARSERS_LENGTH
-} from "src/lib/parse/LibERC4626SubParser.sol";
+} from "../../../src/lib/parse/LibERC4626SubParser.sol";
 import {
     OPCODE_FUNCTION_POINTERS,
     INTEGRITY_FUNCTION_POINTERS,
     SUB_PARSER_WORD_PARSERS,
     OPERAND_HANDLER_FUNCTION_POINTERS
-} from "src/generated/ERC4626Words.pointers.sol";
+} from "../../../src/generated/ERC4626Words.pointers.sol";
 
 /// @notice Asserts the five parallel opcode/word index constants all agree.
 /// Covers HIGH issue: word-name -> opcode-index binding is hand-replicated
