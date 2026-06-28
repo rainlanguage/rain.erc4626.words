@@ -19,6 +19,16 @@ interface IERC20MetadataMinimal {
     function decimals() external view returns (uint8);
 }
 
+/// @dev Upper bound on decimals accepted from vault and asset contracts. Values
+/// above this would cause toFixedDecimalLossless to overflow uint256 for any
+/// non-trivial Float, enabling denial-of-service by a malicious vault.
+uint8 constant MAX_DECIMALS = 36;
+
+/// Thrown when a vault or asset reports more decimals than MAX_DECIMALS.
+/// @param token The vault or asset address that reported the excessive decimals.
+/// @param decimals The reported decimals value.
+error UnsupportedDecimals(address token, uint8 decimals);
+
 /// @title LibERC4626
 /// @notice Core library for interacting with ERC-4626 tokenised vaults on-chain.
 /// Handles conversion between the float representation used by the Rain interpreter
@@ -27,6 +37,7 @@ library LibERC4626 {
     /// Decodes a vault Float into its address and both decimal scales.
     /// Reads vault.decimals() then vault.asset() then assetToken.decimals(),
     /// giving both conversion functions a single, symmetric read path.
+    /// Reverts with UnsupportedDecimals if either reported value exceeds MAX_DECIMALS.
     /// @param vaultFloat Float encoding of the ERC-4626 vault contract address.
     /// @return vault The ERC-4626 vault contract.
     /// @return shareDecimals The decimal precision of the vault share token.
@@ -38,7 +49,10 @@ library LibERC4626 {
     {
         vault = IERC4626Minimal(address(uint160(LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0))));
         shareDecimals = vault.decimals();
-        assetDecimals = IERC20MetadataMinimal(vault.asset()).decimals();
+        if (shareDecimals > MAX_DECIMALS) revert UnsupportedDecimals(address(vault), shareDecimals);
+        address assetAddr = vault.asset();
+        assetDecimals = IERC20MetadataMinimal(assetAddr).decimals();
+        if (assetDecimals > MAX_DECIMALS) revert UnsupportedDecimals(assetAddr, assetDecimals);
     }
 
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
