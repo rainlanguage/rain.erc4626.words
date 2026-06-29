@@ -9,8 +9,11 @@ import {
     EncodedExternDispatchV2
 } from "rain-interpreter-interface-0.1.0/src/interface/IInterpreterExternV4.sol";
 import {LibExtern} from "rainlang-0.1.2/src/lib/extern/LibExtern.sol";
-import {OPCODE_ERC4626_CONVERT_TO_ASSETS, OPCODE_ERC4626_CONVERT_TO_SHARES} from "src/abstract/ERC4626Extern.sol";
-import {ERC4626SubParserWordParsersWrapper} from "test/src/abstract/ERC4626SubParser.wordParsers.wrapper.sol";
+import {
+    OPCODE_ERC4626_CONVERT_TO_ASSETS,
+    OPCODE_ERC4626_CONVERT_TO_SHARES
+} from "../../../src/abstract/ERC4626Extern.sol";
+import {ERC4626SubParserWordParsersWrapper} from "./ERC4626SubParser.wordParsers.wrapper.sol";
 
 /// @notice Pins that erc4626ConvertToAssetsSubParser and erc4626ConvertToSharesSubParser
 /// emit the correct ExternDispatchV2 constant — i.e., the extern address and opcode index

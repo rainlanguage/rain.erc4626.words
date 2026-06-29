@@ -3,10 +3,10 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.16.1/src/Test.sol";
-import {LibERC4626} from "src/lib/erc4626/LibERC4626.sol";
+import {LibERC4626} from "../../../../src/lib/erc4626/LibERC4626.sol";
 import {LibDecimalFloat, Float} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
-import {MockERC4626} from "test/utils/MockERC4626.sol";
-import {MockERC20} from "test/utils/MockERC20.sol";
+import {MockERC4626} from "../../../utils/MockERC4626.sol";
+import {MockERC20} from "../../../utils/MockERC20.sol";
 
 contract LibERC4626Test is Test {
     MockERC20 internal asset;
