@@ -4,19 +4,21 @@ pragma solidity ^0.8.25;
 
 import {LibDecimalFloat, Float} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
 
-/// @dev Minimal ERC-4626 interface covering only the conversion functions and
-/// metadata needed by the Rain words.
-interface IERC4626Minimal {
+/// @dev Minimal ERC-20 metadata interface for reading a token's decimal
+/// precision. Used for the underlying asset and, via IERC4626Minimal, for the
+/// vault share token itself.
+interface IERC20MetadataMinimal {
     function decimals() external view returns (uint8);
+}
+
+/// @dev Minimal ERC-4626 interface covering only the conversion functions and
+/// metadata needed by the Rain words. Inherits decimals() from
+/// IERC20MetadataMinimal, reflecting that every ERC-4626 vault is also an
+/// ERC-20 token.
+interface IERC4626Minimal is IERC20MetadataMinimal {
     function asset() external view returns (address);
     function convertToAssets(uint256 shares) external view returns (uint256 assets);
     function convertToShares(uint256 assets) external view returns (uint256 shares);
-}
-
-/// @dev Minimal ERC-20 metadata interface for reading the underlying asset's
-/// decimal precision.
-interface IERC20MetadataMinimal {
-    function decimals() external view returns (uint8);
 }
 
 /// @title LibERC4626
