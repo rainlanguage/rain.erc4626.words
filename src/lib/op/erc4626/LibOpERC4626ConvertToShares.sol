@@ -16,8 +16,13 @@ library LibOpERC4626ConvertToShares {
     /// Runs the erc4626-convert-to-shares operation.
     /// Reads the vault address and asset amount from the stack, calls
     /// ERC-4626 convertToShares, and pushes the resulting share amount.
-    /// @param inputs the inputs to the extern: [vault address as Float, assets as Float].
-    function run(OperandV2, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
+    /// Rounding follows the vault's convertToShares implementation (per EIP-4626,
+    /// rounds DOWN toward zero, favouring the vault); results are NOT guaranteed exact.
+    /// @param operand Unused operand for this extern word.
+    /// @param inputs [vault address as Float, assets as Float interpreted at the
+    /// underlying asset token's decimals].
+    /// @return A single-element array [shares as Float at the vault share decimals].
+    function run(OperandV2 operand, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
         Float vaultFloat;
         Float assetsFloat;
         assembly ("memory-safe") {
