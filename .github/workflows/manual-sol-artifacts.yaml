@@ -33,6 +33,9 @@ jobs:
           primary-key: nix-${{ runner.os }}-${{ hashFiles('**/*.nix', '**/flake.lock') }}
           restore-prefixes-first-match: nix-${{ runner.os }}-
           gc-max-store-size-linux: 1G
+      - name: Install soldeer dependencies
+        if: hashFiles('soldeer.lock') != ''
+        run: nix develop -c forge soldeer install
       - run: nix develop -c rainix-sol-prelude
       - run: nix develop -c erc4626-words-prelude
       - run: nix develop -c rainix-sol-artifacts
