@@ -24,6 +24,8 @@ interface IERC20MetadataMinimal {
 /// Handles conversion between the float representation used by the Rain interpreter
 /// and the fixed-point uint256 values expected by ERC-4626 contracts.
 library LibERC4626 {
+    error InvalidVaultAddress(uint256 vaultRaw);
+
     /// Decodes a vault Float into its address and both decimal scales.
     /// Reads vault.decimals() then vault.asset() then assetToken.decimals(),
     /// giving both conversion functions a single, symmetric read path.
@@ -36,7 +38,9 @@ library LibERC4626 {
         view
         returns (IERC4626Minimal vault, uint8 shareDecimals, uint8 assetDecimals)
     {
-        vault = IERC4626Minimal(address(uint160(LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0))));
+        uint256 vaultRaw = LibDecimalFloat.toFixedDecimalLossless(vaultFloat, 0);
+        if (vaultRaw > type(uint160).max) revert InvalidVaultAddress(vaultRaw);
+        vault = IERC4626Minimal(address(uint160(vaultRaw)));
         shareDecimals = vault.decimals();
         assetDecimals = IERC20MetadataMinimal(vault.asset()).decimals();
     }
