@@ -213,4 +213,21 @@ contract LibERC4626Test is Test {
         uint256 sharesRaw = LibDecimalFloat.toFixedDecimalLossless(sharesFloat, 18);
         assertEq(sharesRaw, 1e27, "1e9 assets must yield 1e9 shares (1e27 raw) in a 1:1 vault");
     }
+
+    function testConvertToAssetsRevertsForOversizedVaultAddress() external {
+        // 10^49 > type(uint160).max (~1.46e48): a valid integer Float but not a valid address.
+        Float vaultFloat = LibDecimalFloat.packLossless(1, 49);
+        uint256 expected = 10 ** 49;
+        Float sharesFloat = LibDecimalFloat.packLossless(1, 0);
+        vm.expectRevert(abi.encodeWithSelector(LibERC4626.InvalidVaultAddress.selector, expected));
+        this._convertToAssets(vaultFloat, sharesFloat);
+    }
+
+    function testConvertToSharesRevertsForOversizedVaultAddress() external {
+        Float vaultFloat = LibDecimalFloat.packLossless(1, 49);
+        uint256 expected = 10 ** 49;
+        Float assetsFloat = LibDecimalFloat.packLossless(1, 0);
+        vm.expectRevert(abi.encodeWithSelector(LibERC4626.InvalidVaultAddress.selector, expected));
+        this._convertToShares(vaultFloat, assetsFloat);
+    }
 }
