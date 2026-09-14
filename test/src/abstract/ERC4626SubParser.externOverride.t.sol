@@ -5,7 +5,7 @@ pragma solidity =0.8.25;
 import {Test} from "forge-std-1.16.2/src/Test.sol";
 import {OverriddenExternWords} from "./OverriddenExternWords.sol";
 import {DefaultExternWords} from "./DefaultExternWords.sol";
-import {OperandV2} from "rainlang-interface-0.2.8/src/interface/IInterpreterV4.sol";
+import {OperandV2} from "rainlang-interface-0.2.9/src/interface/IInterpreterV4.sol";
 
 /// @notice Pins the extern() override seam: the dispatch constant a sub-parser
 /// word emits embeds whatever address extern() returns (low 160 bits of the

@@ -4,8 +4,8 @@ pragma solidity =0.8.25;
 
 import {
     RainlangExpressionDeployerDeploymentTest
-} from "rainlang-0.2.1/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
-import {UnexpectedOperand} from "rainlang-0.2.1/src/error/ErrParse.sol";
+} from "rainlang-0.2.6/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
+import {UnexpectedOperand} from "rainlang-0.2.6/src/error/ErrParse.sol";
 import {Strings} from "@openzeppelin-contracts-5.6.1/utils/Strings.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 
