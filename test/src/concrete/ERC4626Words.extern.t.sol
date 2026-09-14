@@ -9,9 +9,9 @@ import {
     OPCODE_ERC4626_CONVERT_TO_SHARES,
     OPCODE_FUNCTION_POINTERS_LENGTH
 } from "../../../src/abstract/ERC4626Extern.sol";
-import {ExternDispatchV2, StackItem} from "rainlang-interface-0.2.8/src/interface/IInterpreterExternV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.1.1/src/lib/LibDecimalFloat.sol";
-import {ExternOpcodeOutOfRange} from "rainlang-0.2.1/src/error/ErrExtern.sol";
+import {ExternDispatchV2, StackItem} from "rainlang-interface-0.2.9/src/interface/IInterpreterExternV4.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.2.1/src/lib/LibDecimalFloat.sol";
+import {ExternOpcodeOutOfRange} from "rainlang-0.2.6/src/error/ErrExtern.sol";
 import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 
 /// @notice Tests that ERC4626Words.extern() dispatches through the committed

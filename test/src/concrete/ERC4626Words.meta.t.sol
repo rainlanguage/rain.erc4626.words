@@ -5,9 +5,9 @@ pragma solidity =0.8.25;
 import {Test} from "forge-std-1.16.2/src/Test.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 import {DESCRIBED_BY_META_HASH} from "../../../src/generated/ERC4626WordsPointers.sol";
-import {IDescribedByMetaV1} from "rain-metadata-0.1.0/src/interface/IDescribedByMetaV1.sol";
-import {IInterpreterExternV4} from "rainlang-interface-0.2.8/src/interface/IInterpreterExternV4.sol";
-import {ISubParserV4} from "rainlang-interface-0.2.8/src/interface/ISubParserV4.sol";
+import {IDescribedByMetaV1} from "rain-metadata-0.1.7/src/interface/IDescribedByMetaV1.sol";
+import {IInterpreterExternV4} from "rainlang-interface-0.2.9/src/interface/IInterpreterExternV4.sol";
+import {ISubParserV4} from "rainlang-interface-0.2.9/src/interface/ISubParserV4.sol";
 import {IERC165} from "@openzeppelin-contracts-5.6.1/utils/introspection/IERC165.sol";
 
 contract ERC4626WordsMetaTest is Test {

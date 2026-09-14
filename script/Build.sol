@@ -4,9 +4,9 @@ pragma solidity =0.8.25;
 
 import {Script} from "forge-std-1.16.2/src/Script.sol";
 import {ERC4626Words} from "src/concrete/ERC4626Words.sol";
-import {LibFs} from "rain-sol-codegen-0.1.36/src/lib/LibFs.sol";
-import {LibCodeGen} from "rain-sol-codegen-0.1.36/src/lib/LibCodeGen.sol";
-import {LibGenParseMeta} from "rainlang-interface-0.2.8/src/lib/codegen/LibGenParseMeta.sol";
+import {LibFs} from "rain-sol-codegen-0.1.37/src/lib/LibFs.sol";
+import {LibCodeGen} from "rain-sol-codegen-0.1.37/src/lib/LibCodeGen.sol";
+import {LibGenParseMeta} from "rainlang-interface-0.2.9/src/lib/codegen/LibGenParseMeta.sol";
 import {LibERC4626SubParser} from "src/lib/parse/LibERC4626SubParser.sol";
 import {PARSE_META_BUILD_DEPTH} from "src/abstract/ERC4626SubParser.sol";
 

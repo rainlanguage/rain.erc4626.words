@@ -4,7 +4,7 @@ pragma solidity =0.8.25;
 
 import {ERC4626Extern, BaseRainlangExtern} from "../abstract/ERC4626Extern.sol";
 import {ERC4626SubParser, BaseRainlangSubParser} from "../abstract/ERC4626SubParser.sol";
-import {IDescribedByMetaV1} from "rain-metadata-0.1.0/src/interface/IDescribedByMetaV1.sol";
+import {IDescribedByMetaV1} from "rain-metadata-0.1.7/src/interface/IDescribedByMetaV1.sol";
 import {DESCRIBED_BY_META_HASH} from "../generated/ERC4626WordsPointers.sol";
 
 contract ERC4626Words is ERC4626Extern, ERC4626SubParser {

@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity ^0.8.25;
 
-import {AuthoringMetaV2} from "rainlang-interface-0.2.8/src/interface/ISubParserV4.sol";
+import {AuthoringMetaV2} from "rainlang-interface-0.2.9/src/interface/ISubParserV4.sol";
 
 uint256 constant SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS = 0;
 uint256 constant SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES = 1;

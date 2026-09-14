@@ -3,7 +3,7 @@
 pragma solidity =0.8.25;
 
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
-import {OperandV2} from "rainlang-interface-0.2.8/src/interface/IInterpreterV4.sol";
+import {OperandV2} from "rainlang-interface-0.2.9/src/interface/IInterpreterV4.sol";
 
 /// @notice Same harness on the unmodified contract for the default seam.
 contract DefaultExternWords is ERC4626Words {
