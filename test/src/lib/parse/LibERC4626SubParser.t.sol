@@ -22,11 +22,13 @@ contract LibERC4626SubParserTest is Test {
         AuthoringMetaV2[] memory meta = abi.decode(LibERC4626SubParser.authoringMetaV2(), (AuthoringMetaV2[]));
         assertEq(
             meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS].word,
+            //forge-lint: disable-next-line(unsafe-typecast)
             bytes32("erc4626-convert-to-assets"),
             "index 0 must be erc4626-convert-to-assets"
         );
         assertEq(
             meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES].word,
+            //forge-lint: disable-next-line(unsafe-typecast)
             bytes32("erc4626-convert-to-shares"),
             "index 1 must be erc4626-convert-to-shares"
         );
@@ -38,11 +40,13 @@ contract LibERC4626SubParserTest is Test {
         AuthoringMetaV2[] memory meta = abi.decode(LibERC4626SubParser.authoringMetaV2(), (AuthoringMetaV2[]));
         assertEq(
             meta[0].word,
+            //forge-lint: disable-next-line(unsafe-typecast)
             bytes32("erc4626-convert-to-assets"),
             "opcode 0 must map to convert-to-assets, not convert-to-shares"
         );
         assertEq(
             meta[1].word,
+            //forge-lint: disable-next-line(unsafe-typecast)
             bytes32("erc4626-convert-to-shares"),
             "opcode 1 must map to convert-to-shares, not convert-to-assets"
         );

@@ -23,11 +23,13 @@ contract LibERC4626SubParserAuthoringMetaTest is Test {
         AuthoringMetaV2[] memory meta = abi.decode(LibERC4626SubParser.authoringMetaV2(), (AuthoringMetaV2[]));
         assertEq(
             meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_ASSETS].word,
+            //forge-lint: disable-next-line(unsafe-typecast)
             bytes32("erc4626-convert-to-assets"),
             "index 0 must be erc4626-convert-to-assets"
         );
         assertEq(
             meta[SUB_PARSER_WORD_ERC4626_CONVERT_TO_SHARES].word,
+            //forge-lint: disable-next-line(unsafe-typecast)
             bytes32("erc4626-convert-to-shares"),
             "index 1 must be erc4626-convert-to-shares"
         );

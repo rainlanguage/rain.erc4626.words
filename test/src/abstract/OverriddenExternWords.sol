@@ -11,6 +11,7 @@ import {OperandV2} from "rainlang-interface-0.2.13/src/interface/IInterpreterV4.
 contract OverriddenExternWords is ERC4626Words {
     address internal immutable sOverrideExtern;
 
+    //forge-lint: disable-next-line(missing-zero-check)
     constructor(address overrideExtern) {
         sOverrideExtern = overrideExtern;
     }

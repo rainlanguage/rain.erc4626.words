@@ -31,13 +31,12 @@ library LibOpERC4626ConvertToAssets {
     /// @dev This word performs no validation of the vault or its returned
     /// values beyond Float packing; the result carries whatever trust the
     /// expression places in the vault it names.
-    /// @param operand Unused operand for this extern word.
     /// @param inputs [vault address as raw stack bits, shares as Float
     /// interpreted at the vault's share decimals].
     /// @return outputs a single-element stack: [assets as Float at the
     /// underlying asset token's decimals, rounded down per the vault's
     /// convertToAssets].
-    function run(OperandV2 operand, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
+    function run(OperandV2, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
         if (inputs.length < 2) revert UnexpectedInputs(2, inputs.length);
         bytes32 vault;
         Float sharesFloat;

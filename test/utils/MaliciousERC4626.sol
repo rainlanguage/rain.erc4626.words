@@ -9,6 +9,7 @@ contract MaliciousERC4626 {
     uint8 public decimals;
     address public asset;
 
+    //forge-lint: disable-next-line(missing-zero-check)
     constructor(uint8 decimals_, address asset_) {
         decimals = decimals_;
         asset = asset_;

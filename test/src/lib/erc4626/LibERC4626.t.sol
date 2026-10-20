@@ -153,12 +153,12 @@ contract LibERC4626Test is Test {
         assertTrue(sharesRaw < 333333333333333334, "must not round up toward the interactive caller");
     }
 
-    function _convertToAssets(IERC4626Minimal vault, Float sharesFloat) external view returns (Float) {
-        return LibERC4626.convertToAssets(vault, sharesFloat);
+    function _convertToAssets(IERC4626Minimal target, Float sharesFloat) external view returns (Float) {
+        return LibERC4626.convertToAssets(target, sharesFloat);
     }
 
-    function _convertToShares(IERC4626Minimal vault, Float assetsFloat) external view returns (Float) {
-        return LibERC4626.convertToShares(vault, assetsFloat);
+    function _convertToShares(IERC4626Minimal target, Float assetsFloat) external view returns (Float) {
+        return LibERC4626.convertToShares(target, assetsFloat);
     }
 
     /// @notice For any whole-number shares input and any positive exchange rate,

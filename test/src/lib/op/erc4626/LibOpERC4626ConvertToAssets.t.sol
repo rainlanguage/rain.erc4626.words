@@ -136,7 +136,7 @@ contract LibOpERC4626ConvertToAssetsTest is Test {
         this._callRunAssets(inputs);
     }
 
-    function testRunConvertToAssetsMonotonicFuzz(uint32 sharesA, uint32 sharesB) external {
+    function testRunConvertToAssetsMonotonicFuzz(uint32 sharesA, uint32 sharesB) external view {
         vm.assume(sharesA <= sharesB);
 
         StackItem[] memory inA = new StackItem[](2);

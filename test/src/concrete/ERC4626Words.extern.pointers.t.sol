@@ -22,7 +22,7 @@ contract ERC4626WordsExternPointersTest is Test {
         words = new ERC4626Words();
     }
 
-    function testOpcodePointersMatchCommitted() external {
+    function testOpcodePointersMatchCommitted() external view {
         assertEq(
             words.buildOpcodeFunctionPointers(),
             OPCODE_FUNCTION_POINTERS,
@@ -30,7 +30,7 @@ contract ERC4626WordsExternPointersTest is Test {
         );
     }
 
-    function testIntegrityPointersMatchCommitted() external {
+    function testIntegrityPointersMatchCommitted() external view {
         assertEq(
             words.buildIntegrityFunctionPointers(),
             INTEGRITY_FUNCTION_POINTERS,
@@ -38,7 +38,7 @@ contract ERC4626WordsExternPointersTest is Test {
         );
     }
 
-    function testSubParserWordParsersMatchCommitted() external {
+    function testSubParserWordParsersMatchCommitted() external view {
         assertEq(
             words.buildSubParserWordParsers(),
             SUB_PARSER_WORD_PARSERS,
@@ -46,7 +46,7 @@ contract ERC4626WordsExternPointersTest is Test {
         );
     }
 
-    function testOperandHandlerPointersMatchCommitted() external {
+    function testOperandHandlerPointersMatchCommitted() external view {
         assertEq(
             words.buildOperandHandlerFunctionPointers(),
             OPERAND_HANDLER_FUNCTION_POINTERS,
