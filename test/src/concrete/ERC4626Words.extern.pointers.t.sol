@@ -2,7 +2,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {Test} from "forge-std-1.16.2/src/Test.sol";
+import {Test} from "forge-std-1.17.0/src/Test.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 import {
     OPCODE_FUNCTION_POINTERS,
@@ -13,7 +13,7 @@ import {
 import {OPCODE_FUNCTION_POINTERS_LENGTH} from "../../../src/abstract/ERC4626Extern.sol";
 import {LibOpERC4626ConvertToAssets} from "../../../src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {LibOpERC4626ConvertToShares} from "../../../src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
-import {OperandV2} from "rainlang-interface-0.2.9/src/interface/IInterpreterV4.sol";
+import {OperandV2} from "rainlang-interface-0.2.13/src/interface/IInterpreterV4.sol";
 
 contract ERC4626WordsExternPointersTest is Test {
     ERC4626Words internal words;
@@ -22,7 +22,7 @@ contract ERC4626WordsExternPointersTest is Test {
         words = new ERC4626Words();
     }
 
-    function testOpcodePointersMatchCommitted() external {
+    function testOpcodePointersMatchCommitted() external view {
         assertEq(
             words.buildOpcodeFunctionPointers(),
             OPCODE_FUNCTION_POINTERS,
@@ -30,7 +30,7 @@ contract ERC4626WordsExternPointersTest is Test {
         );
     }
 
-    function testIntegrityPointersMatchCommitted() external {
+    function testIntegrityPointersMatchCommitted() external view {
         assertEq(
             words.buildIntegrityFunctionPointers(),
             INTEGRITY_FUNCTION_POINTERS,
@@ -38,7 +38,7 @@ contract ERC4626WordsExternPointersTest is Test {
         );
     }
 
-    function testSubParserWordParsersMatchCommitted() external {
+    function testSubParserWordParsersMatchCommitted() external view {
         assertEq(
             words.buildSubParserWordParsers(),
             SUB_PARSER_WORD_PARSERS,
@@ -46,7 +46,7 @@ contract ERC4626WordsExternPointersTest is Test {
         );
     }
 
-    function testOperandHandlerPointersMatchCommitted() external {
+    function testOperandHandlerPointersMatchCommitted() external view {
         assertEq(
             words.buildOperandHandlerFunctionPointers(),
             OPERAND_HANDLER_FUNCTION_POINTERS,

@@ -2,9 +2,9 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {Test} from "forge-std-1.16.2/src/Test.sol";
+import {Test} from "forge-std-1.17.0/src/Test.sol";
 import {LibERC4626, IERC4626Minimal} from "../../../../src/lib/erc4626/LibERC4626.sol";
-import {LibDecimalFloat, Float} from "rain-math-float-0.2.1/src/lib/LibDecimalFloat.sol";
+import {LibDecimalFloat, Float} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
 import {MockERC4626} from "../../../utils/MockERC4626.sol";
 import {MockERC20} from "../../../utils/MockERC20.sol";
 
@@ -153,12 +153,12 @@ contract LibERC4626Test is Test {
         assertTrue(sharesRaw < 333333333333333334, "must not round up toward the interactive caller");
     }
 
-    function _convertToAssets(IERC4626Minimal vault, Float sharesFloat) external view returns (Float) {
-        return LibERC4626.convertToAssets(vault, sharesFloat);
+    function _convertToAssets(IERC4626Minimal target, Float sharesFloat) external view returns (Float) {
+        return LibERC4626.convertToAssets(target, sharesFloat);
     }
 
-    function _convertToShares(IERC4626Minimal vault, Float assetsFloat) external view returns (Float) {
-        return LibERC4626.convertToShares(vault, assetsFloat);
+    function _convertToShares(IERC4626Minimal target, Float assetsFloat) external view returns (Float) {
+        return LibERC4626.convertToShares(target, assetsFloat);
     }
 
     /// @notice For any whole-number shares input and any positive exchange rate,

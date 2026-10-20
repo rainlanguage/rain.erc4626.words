@@ -2,10 +2,10 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity ^0.8.25;
 
-import {OperandV2, StackItem} from "rainlang-interface-0.2.9/src/interface/IInterpreterV4.sol";
-import {Float} from "rain-math-float-0.2.1/src/lib/LibDecimalFloat.sol";
+import {OperandV2, StackItem} from "rainlang-interface-0.2.13/src/interface/IInterpreterV4.sol";
+import {Float} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
 import {LibERC4626, IERC4626Minimal} from "../../erc4626/LibERC4626.sol";
-import {NotAnAddress} from "rainlang-0.2.6/src/error/ErrRainType.sol";
+import {NotAnAddress} from "rainlang-0.2.13/src/error/ErrRainType.sol";
 
 error UnexpectedInputs(uint256 expected, uint256 actual);
 
@@ -31,13 +31,12 @@ library LibOpERC4626ConvertToAssets {
     /// @dev This word performs no validation of the vault or its returned
     /// values beyond Float packing; the result carries whatever trust the
     /// expression places in the vault it names.
-    /// @param operand Unused operand for this extern word.
     /// @param inputs [vault address as raw stack bits, shares as Float
     /// interpreted at the vault's share decimals].
     /// @return outputs a single-element stack: [assets as Float at the
     /// underlying asset token's decimals, rounded down per the vault's
     /// convertToAssets].
-    function run(OperandV2 operand, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
+    function run(OperandV2, StackItem[] memory inputs) internal view returns (StackItem[] memory) {
         if (inputs.length < 2) revert UnexpectedInputs(2, inputs.length);
         bytes32 vault;
         Float sharesFloat;

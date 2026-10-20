@@ -14,6 +14,7 @@ contract MockERC4626 {
     /// expressed in raw asset units.
     uint256 public assetsPerShare;
 
+    //forge-lint: disable-next-line(missing-zero-check)
     constructor(uint8 shareDecimals_, address asset_, uint256 assetsPerShare_) {
         decimals = shareDecimals_;
         asset = asset_;
