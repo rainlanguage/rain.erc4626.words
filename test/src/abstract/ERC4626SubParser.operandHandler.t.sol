@@ -4,9 +4,9 @@ pragma solidity =0.8.25;
 
 import {
     RainlangExpressionDeployerDeploymentTest
-} from "rainlang-0.2.6/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
-import {UnexpectedOperand} from "rainlang-0.2.6/src/error/ErrParse.sol";
-import {Strings} from "@openzeppelin-contracts-5.6.1/utils/Strings.sol";
+} from "rainlang-0.2.13/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
+import {UnexpectedOperand} from "rainlang-0.2.13/src/error/ErrParse.sol";
+import {Strings} from "@openzeppelin-contracts-5.7.0/utils/Strings.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 
 /// @notice Tests that erc4626-convert-to-assets and erc4626-convert-to-shares

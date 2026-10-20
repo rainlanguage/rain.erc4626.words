@@ -2,13 +2,13 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {Test} from "forge-std-1.16.2/src/Test.sol";
-import {stdError} from "forge-std-1.16.2/src/StdError.sol";
+import {Test} from "forge-std-1.17.0/src/Test.sol";
+import {stdError} from "forge-std-1.17.0/src/StdError.sol";
 import {LibOpERC4626ConvertToShares} from "../../../../../src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
-import {NotAnAddress} from "rainlang-0.2.6/src/error/ErrRainType.sol";
-import {OperandV2, StackItem} from "rainlang-interface-0.2.9/src/interface/IInterpreterV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.2.1/src/lib/LibDecimalFloat.sol";
-import {LossyConversionFromFloat, CoefficientOverflow} from "rain-math-float-0.2.1/src/error/ErrDecimalFloat.sol";
+import {NotAnAddress} from "rainlang-0.2.13/src/error/ErrRainType.sol";
+import {OperandV2, StackItem} from "rainlang-interface-0.2.13/src/interface/IInterpreterV4.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
+import {LossyConversionFromFloat, LossyConversionToFloat} from "rain-math-float-0.3.10/src/error/ErrDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "../../../../utils/MockERC4626.sol";
 import {UnexpectedInputs} from "../../../../../src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 
@@ -181,20 +181,35 @@ contract LibOpERC4626ConvertToSharesTest is Test {
         return LibOpERC4626ConvertToShares.run(OperandV2.wrap(0), inputs);
     }
 
-    function testRunRevertsOnLossySharesOutput() external {
-        // sharesRaw > type(int224).max triggers CoefficientOverflow in
-        // fromFixedDecimalLosslessPacked (the output conversion path).
-        // Use 0-decimal asset and vault with a 1:1 rate; supply 2 * 10^67 assets
-        // so sharesRaw = 2 * 10^67 > int224.max (≈ 1.36e67).
+    function testRunExactSharesOutputPastInt224() external {
+        // 2e67 exceeds int224.max but has trailing zeros, so it packs exactly.
         MockERC20 asset0 = new MockERC20(0);
         MockERC4626 vault0 = new MockERC4626(0, address(asset0), 1);
 
         StackItem[] memory inputs = new StackItem[](2);
-        inputs[0] =
-            StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(int256(uint256(uint160(address(vault0)))), 0)));
+        inputs[0] = StackItem.wrap(bytes32(uint256(uint160(address(vault0)))));
         inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(2, 67)));
 
-        vm.expectRevert(abi.encodeWithSelector(CoefficientOverflow.selector, int256(2) * int256(10) ** 67, int256(0)));
+        StackItem[] memory outputs = this.runExternal(inputs);
+        assertEq(LibDecimalFloat.toFixedDecimalLossless(Float.wrap(StackItem.unwrap(outputs[0])), 0), 2e67);
+    }
+
+    function testRunRevertsOnLossySharesOutput() external {
+        // floor(2e68 / 3) exceeds int224.max and ends in a non-zero digit.
+        MockERC20 asset0 = new MockERC20(0);
+        MockERC4626 vault0 = new MockERC4626(1, address(asset0), 3);
+
+        StackItem[] memory inputs = new StackItem[](2);
+        inputs[0] = StackItem.wrap(bytes32(uint256(uint160(address(vault0)))));
+        inputs[1] = StackItem.wrap(Float.unwrap(LibDecimalFloat.packLossless(2, 67)));
+
+        vm.expectRevert(
+            abi.encodeWithSelector(
+                LossyConversionToFloat.selector,
+                int256(66666666666666666666666666666666666666666666666666666666666666666666),
+                int256(-1)
+            )
+        );
         this.runExternal(inputs);
     }
 

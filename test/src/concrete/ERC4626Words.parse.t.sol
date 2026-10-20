@@ -4,18 +4,18 @@ pragma solidity =0.8.25;
 
 import {
     RainlangExpressionDeployerDeploymentTest
-} from "rainlang-0.2.6/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
+} from "rainlang-0.2.13/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
 import {
     EvalV4,
     SourceIndexV2,
     FullyQualifiedNamespace,
     StackItem
-} from "rainlang-interface-0.2.9/src/interface/IInterpreterV4.sol";
-import {LibContext} from "rainlang-interface-0.2.9/src/lib/caller/LibContext.sol";
-import {SignedContextV1} from "rainlang-interface-0.2.9/src/interface/IInterpreterCallerV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.2.1/src/lib/LibDecimalFloat.sol";
-import {Strings} from "@openzeppelin-contracts-5.6.1/utils/Strings.sol";
-import {ExternIntegrityInputsMismatch} from "rainlang-0.2.6/src/error/ErrExtern.sol";
+} from "rainlang-interface-0.2.13/src/interface/IInterpreterV4.sol";
+import {LibContext} from "rainlang-interface-0.2.13/src/lib/caller/LibContext.sol";
+import {SignedContextV1} from "rainlang-interface-0.2.13/src/interface/IInterpreterCallerV4.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
+import {Strings} from "@openzeppelin-contracts-5.7.0/utils/Strings.sol";
+import {ExternIntegrityInputsMismatch} from "rainlang-0.2.13/src/error/ErrExtern.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 
