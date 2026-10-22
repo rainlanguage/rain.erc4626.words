@@ -11,7 +11,7 @@ import {
 } from "../../../src/abstract/ERC4626Extern.sol";
 import {ExternDispatchV2, StackItem} from "rainlang-interface-0.2.13/src/interface/IInterpreterExternV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
-import {ExternOpcodeOutOfRange} from "rainlang-0.2.13/src/error/ErrExtern.sol";
+import {ExternOpcodeOutOfRange} from "rainlang-0.2.16/src/error/ErrExtern.sol";
 import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 
 /// @notice Tests that ERC4626Words.extern() dispatches through the committed

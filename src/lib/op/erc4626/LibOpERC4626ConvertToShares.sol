@@ -5,7 +5,7 @@ pragma solidity ^0.8.25;
 import {OperandV2, StackItem} from "rainlang-interface-0.2.13/src/interface/IInterpreterV4.sol";
 import {Float} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
 import {LibERC4626, IERC4626Minimal} from "../../erc4626/LibERC4626.sol";
-import {NotAnAddress} from "rainlang-0.2.13/src/error/ErrRainType.sol";
+import {NotAnAddress} from "rainlang-0.2.16/src/error/ErrRainType.sol";
 
 error UnexpectedInputs(uint256 expected, uint256 actual);
 

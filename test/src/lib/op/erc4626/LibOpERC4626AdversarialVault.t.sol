@@ -11,7 +11,7 @@ import {LossyConversionToFloat, FixedDecimalOverflow} from "rain-math-float-0.3.
 import {MockERC20} from "../../../../utils/MockERC20.sol";
 import {MaliciousERC4626} from "../../../../utils/MaliciousERC4626.sol";
 import {MockERC4626} from "../../../../utils/MockERC4626.sol";
-import {NotAnAddress} from "rainlang-0.2.13/src/error/ErrRainType.sol";
+import {NotAnAddress} from "rainlang-0.2.16/src/error/ErrRainType.sol";
 
 /// @notice Tests that an adversarial vault returning type(uint256).max causes a
 /// revert with LossyConversionToFloat rather than silent data corruption.
