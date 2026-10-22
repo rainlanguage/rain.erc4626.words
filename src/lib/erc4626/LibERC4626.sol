@@ -1,21 +1,21 @@
 // SPDX-License-Identifier: LicenseRef-DCL-1.0
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
-pragma solidity ^0.8.25;
+pragma solidity =0.8.25;
 
 import {LibDecimalFloat, Float} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
 
-/// @dev Minimal ERC-20 metadata interface for reading a token's decimal
-/// precision. Used for the underlying asset and, via IERC4626Minimal, for the
-/// vault share token itself.
-interface IERC20MetadataMinimal {
+/// @dev Minimal interface for any token that exposes decimal precision.
+/// Shared by both the vault (for share decimals) and the underlying asset
+/// (for asset decimals) to avoid declaring the identical decimals() selector twice.
+interface IDecimalsMinimal {
     function decimals() external view returns (uint8);
 }
 
 /// @dev Minimal ERC-4626 interface covering only the conversion functions and
-/// metadata needed by the Rain words. Inherits decimals() from
-/// IERC20MetadataMinimal, reflecting that every ERC-4626 vault is also an
+/// vault metadata needed by the Rain words. Inherits decimals() from
+/// IDecimalsMinimal, reflecting that every ERC-4626 vault is also an
 /// ERC-20 token.
-interface IERC4626Minimal is IERC20MetadataMinimal {
+interface IERC4626Minimal is IDecimalsMinimal {
     function asset() external view returns (address);
     function convertToAssets(uint256 shares) external view returns (uint256 assets);
     function convertToShares(uint256 assets) external view returns (uint256 shares);
@@ -35,7 +35,7 @@ library LibERC4626 {
     /// @return assetDecimals The decimal precision of the underlying asset token.
     function _vaultScales(IERC4626Minimal vault) private view returns (uint8 shareDecimals, uint8 assetDecimals) {
         shareDecimals = vault.decimals();
-        assetDecimals = IERC20MetadataMinimal(vault.asset()).decimals();
+        assetDecimals = IDecimalsMinimal(vault.asset()).decimals();
     }
 
     /// @notice Converts vault shares to underlying assets via ERC-4626 convertToAssets.
