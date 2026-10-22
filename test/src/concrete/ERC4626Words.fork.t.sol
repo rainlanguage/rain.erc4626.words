@@ -76,10 +76,10 @@ contract ERC4626WordsForkTest is Test {
         assertEq(actualShares, expectedShares, string.concat(label, ": assetsToShares mismatch"));
     }
 
-    /// @dev Iterates every vault in `allForkVaults()`, which sits directly beside the
-    ///      WT_* constants in LibFork.sol so adding a vault is a single adjacent edit.
-    ///      The array is still hand-maintained: a new WT_* constant is only tested once
-    ///      it is added to `allForkVaults()`.
+    /// @dev Iterates every vault in `allForkVaults()`, the single registry of
+    ///      fork-tested vault addresses: the count is the registry's `.length`
+    ///      and labels derive from the addresses themselves, so every registry
+    ///      entry is checked with no parallel list to keep in sync.
     function testAllForkVaults() external view {
         address[] memory vaults_ = allForkVaults();
         for (uint256 i; i < vaults_.length; i++) {
