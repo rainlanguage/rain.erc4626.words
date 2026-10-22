@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: LicenseRef-DCL-1.0
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
-pragma solidity ^0.8.25;
+pragma solidity =0.8.25;
 
 /// @dev Adversarial ERC-4626 vault that always returns type(uint256).max from
 /// both convertToAssets and convertToShares, simulating a malicious or broken
