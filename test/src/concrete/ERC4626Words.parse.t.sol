@@ -4,7 +4,7 @@ pragma solidity =0.8.25;
 
 import {
     RainlangExpressionDeployerDeploymentTest
-} from "rainlang-0.2.16/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
+} from "rainlang-0.2.19/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
 import {
     EvalV4,
     SourceIndexV2,
@@ -15,7 +15,7 @@ import {LibContext} from "rainlang-interface-0.2.13/src/lib/caller/LibContext.so
 import {SignedContextV1} from "rainlang-interface-0.2.13/src/interface/IInterpreterCallerV4.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
 import {Strings} from "@openzeppelin-contracts-5.7.0/utils/Strings.sol";
-import {ExternIntegrityInputsMismatch} from "rainlang-0.2.16/src/error/ErrExtern.sol";
+import {ExternIntegrityInputsMismatch} from "rainlang-0.2.19/src/error/ErrExtern.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 
