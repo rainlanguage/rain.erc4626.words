@@ -5,13 +5,13 @@ pragma solidity =0.8.25;
 import {Test} from "forge-std-1.17.0/src/Test.sol";
 import {LibOpERC4626ConvertToAssets} from "../../../../../src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {LibOpERC4626ConvertToShares} from "../../../../../src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
-import {OperandV2, StackItem} from "rainlang-0.2.27/src/interface/IInterpreterV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
-import {LossyConversionToFloat, FixedDecimalOverflow} from "rain-math-float-0.3.10/src/error/ErrDecimalFloat.sol";
+import {OperandV2, StackItem} from "rainlang-0.2.30/src/interface/IInterpreterV4.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.3.11/src/lib/LibDecimalFloat.sol";
+import {LossyConversionToFloat, FixedDecimalOverflow} from "rain-math-float-0.3.11/src/error/ErrDecimalFloat.sol";
 import {MockERC20} from "../../../../utils/MockERC20.sol";
 import {MaliciousERC4626} from "../../../../utils/MaliciousERC4626.sol";
 import {MockERC4626} from "../../../../utils/MockERC4626.sol";
-import {NotAnAddress} from "rainlang-0.2.27/src/error/ErrRainType.sol";
+import {NotAnAddress} from "rainlang-0.2.30/src/error/ErrRainType.sol";
 
 /// @notice Tests that an adversarial vault returning type(uint256).max causes a
 /// revert with LossyConversionToFloat rather than silent data corruption.

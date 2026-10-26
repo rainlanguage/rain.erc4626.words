@@ -13,7 +13,7 @@ import {
 import {OPCODE_FUNCTION_POINTERS_LENGTH} from "../../../src/abstract/ERC4626Extern.sol";
 import {LibOpERC4626ConvertToAssets} from "../../../src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {LibOpERC4626ConvertToShares} from "../../../src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
-import {OperandV2} from "rainlang-0.2.27/src/interface/IInterpreterV4.sol";
+import {OperandV2} from "rainlang-0.2.30/src/interface/IInterpreterV4.sol";
 
 contract ERC4626WordsExternPointersTest is Test {
     ERC4626Words internal words;

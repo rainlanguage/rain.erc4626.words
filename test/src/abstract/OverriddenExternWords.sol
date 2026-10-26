@@ -3,7 +3,7 @@
 pragma solidity =0.8.25;
 
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
-import {OperandV2} from "rainlang-0.2.27/src/interface/IInterpreterV4.sol";
+import {OperandV2} from "rainlang-0.2.30/src/interface/IInterpreterV4.sol";
 
 /// @notice Derived contract that overrides the extern() seam to point at a
 /// separately specified extern address, exposing both sub-parser word
