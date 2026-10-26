@@ -3,7 +3,7 @@
 pragma solidity =0.8.25;
 
 import {Test} from "forge-std-1.17.0/src/Test.sol";
-import {AuthoringMetaV2} from "rainlang-interface-0.2.13/src/interface/ISubParserV4.sol";
+import {AuthoringMetaV2} from "rainlang-0.2.27/src/interface/ISubParserV4.sol";
 import {LibERC4626SubParser} from "../../../src/lib/parse/LibERC4626SubParser.sol";
 
 /// @notice README.md must document every word declared by authoringMetaV2().

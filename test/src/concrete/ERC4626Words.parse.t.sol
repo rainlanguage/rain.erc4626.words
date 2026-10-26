@@ -2,20 +2,18 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {
-    RainlangExpressionDeployerDeploymentTest
-} from "rainlang-0.2.19/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
+import {RainlangCompilerDeploymentTest} from "rainlang-0.2.27/test/abstract/RainlangCompilerDeploymentTest.sol";
 import {
     EvalV4,
     SourceIndexV2,
     FullyQualifiedNamespace,
     StackItem
-} from "rainlang-interface-0.2.13/src/interface/IInterpreterV4.sol";
-import {LibContext} from "rainlang-interface-0.2.13/src/lib/caller/LibContext.sol";
-import {SignedContextV1} from "rainlang-interface-0.2.13/src/interface/IInterpreterCallerV4.sol";
+} from "rainlang-0.2.27/src/interface/IInterpreterV4.sol";
+import {LibContext} from "rainlang-0.2.27/src/lib/caller/LibContext.sol";
+import {SignedContextV2} from "rainlang-0.2.27/src/interface/IInterpreterCallerV5.sol";
 import {Float, LibDecimalFloat} from "rain-math-float-0.3.10/src/lib/LibDecimalFloat.sol";
 import {Strings} from "@openzeppelin-contracts-5.7.0/utils/Strings.sol";
-import {ExternIntegrityInputsMismatch} from "rainlang-0.2.19/src/error/ErrExtern.sol";
+import {ExternIntegrityInputsMismatch} from "rainlang-0.2.27/src/error/ErrExtern.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 
@@ -23,7 +21,7 @@ import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 /// These tests exercise the full name → PARSE_META → opcode → extern dispatch chain,
 /// catching any transposition in word name–to–opcode index mapping that unit tests
 /// calling LibOp*.run() directly would not detect.
-contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
+contract ERC4626WordsParseTest is RainlangCompilerDeploymentTest {
     ERC4626Words internal words;
     MockERC20 internal asset;
     MockERC4626 internal vault;
@@ -44,7 +42,7 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
                 namespace: FullyQualifiedNamespace.wrap(0),
                 bytecode: bytecode,
                 sourceIndex: SourceIndexV2.wrap(0),
-                context: LibContext.build(new bytes32[][](0), new SignedContextV1[](0)),
+                context: LibContext.buildV2(new bytes32[][](0), new SignedContextV2[](0)),
                 inputs: new StackItem[](0),
                 stateOverlay: new bytes32[](0)
             })
@@ -54,7 +52,7 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
     /// @dev Parses and evaluates erc4626-convert-to-assets via the real subparser+PARSE_META path.
     /// 1 share in a 2:1 vault (1 share = 2 USDC) must evaluate to Float(2.0).
     function testParseEvalConvertToAssets() external view {
-        bytes memory bytecode = I_DEPLOYER.parse2(
+        bytes memory bytecode = I_COMPILER.parse2(
             bytes(
                 string.concat(
                     "using-words-from ",
@@ -75,7 +73,7 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
     /// @dev Parses and evaluates erc4626-convert-to-shares via the real subparser+PARSE_META path.
     /// 2 USDC in a 2:1 vault must evaluate to Float(1.0) == 1 share.
     function testParseEvalConvertToShares() external view {
-        bytes memory bytecode = I_DEPLOYER.parse2(
+        bytes memory bytecode = I_COMPILER.parse2(
             bytes(
                 string.concat(
                     "using-words-from ",
@@ -100,7 +98,7 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
     /// A transposition in the PARSE_META word→opcode mapping would make them swap,
     /// making the test fail in exactly the scenario issue #134 describes.
     function testWordNamesMustMapToDistinctOpcodes() external view {
-        bytes memory bytecodeAssets = I_DEPLOYER.parse2(
+        bytes memory bytecodeAssets = I_COMPILER.parse2(
             bytes(
                 string.concat(
                     "using-words-from ",
@@ -111,7 +109,7 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
                 )
             )
         );
-        bytes memory bytecodeShares = I_DEPLOYER.parse2(
+        bytes memory bytecodeShares = I_COMPILER.parse2(
             bytes(
                 string.concat(
                     "using-words-from ",
@@ -147,7 +145,7 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
             )
         );
         vm.expectRevert(abi.encodeWithSelector(ExternIntegrityInputsMismatch.selector, 1, 2));
-        I_DEPLOYER.parse2(source);
+        I_COMPILER.parse2(source);
     }
 
     /// @dev A source giving erc4626-convert-to-assets too many inputs (3
@@ -165,7 +163,7 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
             )
         );
         vm.expectRevert(abi.encodeWithSelector(ExternIntegrityInputsMismatch.selector, 3, 2));
-        I_DEPLOYER.parse2(source);
+        I_COMPILER.parse2(source);
     }
 
     /// @dev A source giving erc4626-convert-to-shares too few inputs (1 instead
@@ -183,6 +181,6 @@ contract ERC4626WordsParseTest is RainlangExpressionDeployerDeploymentTest {
             )
         );
         vm.expectRevert(abi.encodeWithSelector(ExternIntegrityInputsMismatch.selector, 1, 2));
-        I_DEPLOYER.parse2(source);
+        I_COMPILER.parse2(source);
     }
 }

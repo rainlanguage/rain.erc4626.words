@@ -2,10 +2,8 @@
 // SPDX-FileCopyrightText: Copyright (c) 2020 Rain Open Source Software Ltd
 pragma solidity =0.8.25;
 
-import {
-    RainlangExpressionDeployerDeploymentTest
-} from "rainlang-0.2.19/test/abstract/RainlangExpressionDeployerDeploymentTest.sol";
-import {UnexpectedOperand} from "rainlang-0.2.19/src/error/ErrParse.sol";
+import {RainlangCompilerDeploymentTest} from "rainlang-0.2.27/test/abstract/RainlangCompilerDeploymentTest.sol";
+import {UnexpectedOperand} from "rainlang-0.2.27/src/error/ErrParse.sol";
 import {Strings} from "@openzeppelin-contracts-5.7.0/utils/Strings.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 
@@ -14,7 +12,7 @@ import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
 /// LibParseOperand.handleOperandDisallowed in buildOperandHandlerFunctionPointers.
 /// A mutant swapping that handler for a permissive one would allow operands
 /// through, causing these tests to fail.
-contract ERC4626SubParserOperandHandlerTest is RainlangExpressionDeployerDeploymentTest {
+contract ERC4626SubParserOperandHandlerTest is RainlangCompilerDeploymentTest {
     ERC4626Words internal words;
 
     function setUp() external {
@@ -23,7 +21,7 @@ contract ERC4626SubParserOperandHandlerTest is RainlangExpressionDeployerDeploym
 
     function testConvertToAssetsRevertsOnOperand() external {
         vm.expectRevert(abi.encodeWithSelector(UnexpectedOperand.selector));
-        I_DEPLOYER.parse2(
+        I_COMPILER.parse2(
             bytes(
                 string.concat(
                     "using-words-from ",
@@ -38,7 +36,7 @@ contract ERC4626SubParserOperandHandlerTest is RainlangExpressionDeployerDeploym
 
     function testConvertToSharesRevertsOnOperand() external {
         vm.expectRevert(abi.encodeWithSelector(UnexpectedOperand.selector));
-        I_DEPLOYER.parse2(
+        I_COMPILER.parse2(
             bytes(
                 string.concat(
                     "using-words-from ",
