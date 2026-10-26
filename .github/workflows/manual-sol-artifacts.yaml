@@ -15,7 +15,7 @@ jobs:
       - run: |
           network=${{ inputs.network }}
           echo "etherscan_api_key_secret_name=CI_DEPLOY_${network^^}_ETHERSCAN_API_KEY" >> $GITHUB_ENV
-          echo "rpc_secret_name=CI_DEPLOY_${network^^}_RPC_URL" >> $GITHUB_ENV
+          echo "rpc_secret_name=RPC_URL_${network^^}_FORK" >> $GITHUB_ENV
           echo "verify_secret_name=CI_DEPLOY_${network^^}_VERIFY" >> $GITHUB_ENV
           echo "verifier_secret_name=CI_DEPLOY_${network^^}_VERIFIER" >> $GITHUB_ENV
           echo "verifier_url_secret_name=CI_DEPLOY_${network^^}_VERIFIER_URL" >> $GITHUB_ENV
