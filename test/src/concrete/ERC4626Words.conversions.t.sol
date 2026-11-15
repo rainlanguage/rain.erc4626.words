@@ -9,7 +9,7 @@ import {LibOpERC4626ConvertToShares} from "../../../src/lib/op/erc4626/LibOpERC4
 import {OperandV2, StackItem} from "rainlang-0.2.35/src/interface/IInterpreterV4.sol";
 import {IInterpreterExternV4} from "rainlang-0.2.35/src/interface/IInterpreterExternV4.sol";
 import {ISubParserV4} from "rainlang-0.2.35/src/interface/ISubParserV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.3.12/src/lib/LibDecimalFloat.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.3.11/src/lib/LibDecimalFloat.sol";
 import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 import {IDescribedByMetaV1} from "rain-metadata-0.1.46/src/interface/IDescribedByMetaV1.sol";
 import {IIntegrityToolingV1} from "rain-sol-codegen-0.1.39/src/interface/IIntegrityToolingV1.sol";

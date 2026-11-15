@@ -7,7 +7,7 @@ import {FORK_RPC_URL_BASE, FORK_BLOCK_BASE, allForkVaults} from "../../lib/LibFo
 import {LibOpERC4626ConvertToAssets} from "../../../src/lib/op/erc4626/LibOpERC4626ConvertToAssets.sol";
 import {LibOpERC4626ConvertToShares} from "../../../src/lib/op/erc4626/LibOpERC4626ConvertToShares.sol";
 import {OperandV2, StackItem} from "rainlang-0.2.35/src/interface/IInterpreterV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.3.12/src/lib/LibDecimalFloat.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.3.11/src/lib/LibDecimalFloat.sol";
 
 interface IERC4626Fork {
     function decimals() external view returns (uint8);

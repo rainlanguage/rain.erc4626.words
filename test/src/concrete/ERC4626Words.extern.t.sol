@@ -10,7 +10,7 @@ import {
     OPCODE_FUNCTION_POINTERS_LENGTH
 } from "../../../src/abstract/ERC4626Extern.sol";
 import {ExternDispatchV2, StackItem} from "rainlang-0.2.35/src/interface/IInterpreterExternV4.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.3.12/src/lib/LibDecimalFloat.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.3.11/src/lib/LibDecimalFloat.sol";
 import {ExternOpcodeOutOfRange} from "rainlang-0.2.35/src/error/ErrExtern.sol";
 import {MockERC4626, MockERC20} from "../../utils/MockERC4626.sol";
 

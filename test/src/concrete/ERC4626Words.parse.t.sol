@@ -11,7 +11,7 @@ import {
 } from "rainlang-0.2.35/src/interface/IInterpreterV4.sol";
 import {LibContext} from "rainlang-0.2.35/src/lib/caller/LibContext.sol";
 import {SignedContextV2} from "rainlang-0.2.35/src/interface/IInterpreterCallerV5.sol";
-import {Float, LibDecimalFloat} from "rain-math-float-0.3.12/src/lib/LibDecimalFloat.sol";
+import {Float, LibDecimalFloat} from "rain-math-float-0.3.11/src/lib/LibDecimalFloat.sol";
 import {Strings} from "@openzeppelin-contracts-5.7.0/utils/Strings.sol";
 import {ExternIntegrityInputsMismatch} from "rainlang-0.2.35/src/error/ErrExtern.sol";
 import {ERC4626Words} from "../../../src/concrete/ERC4626Words.sol";
