@@ -26,10 +26,17 @@ address constant METABOARD_ADDRESS = 0x8fD50fF9Db9835ba1B61394752A26F53D721D2a1;
 /// This script is a manual dispatch only. Nothing in the repository asserts
 /// that any network has been deployed, so no merge waits on a deploy.
 contract Deploy is Script {
-    /// The networks this contract deploys to: every rain supported network.
-    /// Deployment is deterministic so the address is identical everywhere.
+    /// The networks this contract deploys to: every rain supported network
+    /// plus 0G mainnet (`zerog`, added in rain-deploy 0.1.38; appended here so
+    /// the older `rainlang-0.1.2` / `rain-math-float-0.1.1` pin — and therefore
+    /// the canonical Zoltu address `0x03e3f0C8...` — does not move).
     function networks() internal pure returns (string[] memory nets) {
-        nets = LibRainDeploy.supportedNetworks();
+        string[] memory baseNets = LibRainDeploy.supportedNetworks();
+        nets = new string[](baseNets.length + 1);
+        for (uint256 i = 0; i < baseNets.length; i++) {
+            nets[i] = baseNets[i];
+        }
+        nets[baseNets.length] = "zerog";
     }
 
     function run() external {
