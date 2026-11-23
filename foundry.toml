@@ -48,6 +48,7 @@ hyperevm = "${HYPEREVM_RPC_URL}"
 robinhood = "${ROBINHOOD_RPC_URL}"
 bsc = "${BSC_RPC_URL}"
 polygon = "${POLYGON_RPC_URL}"
+zerog = "${ZEROG_RPC_URL}"
 
 # `rainix-manual-sol-artifacts` passes `--verify` by default and exports exactly
 # these variable names, so a deploy without this section broadcasts and then
@@ -72,6 +73,7 @@ hyperevm = { key = "${CI_DEPLOY_HYPEREVM_ETHERSCAN_API_KEY}", chain = 999 }
 robinhood = { key = "${CI_DEPLOY_ROBINHOOD_ETHERSCAN_API_KEY}", chain = 4663, url = "https://robinhoodchain.blockscout.com/api" }
 bsc = { key = "${CI_DEPLOY_BSC_ETHERSCAN_API_KEY}", chain = 56 }
 polygon = { key = "${CI_DEPLOY_POLYGON_ETHERSCAN_API_KEY}" }
+zerog = { key = "${CI_DEPLOY_ZEROG_ETHERSCAN_API_KEY}", chain = 16661, url = "https://chainscan.0g.ai/open/api" }
 
 [dependencies]
 forge-std = "1.16.2"
